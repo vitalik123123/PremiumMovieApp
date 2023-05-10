@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PremiumMovieApp</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="name_button_play">Play</string>
+    <string name="name_button_add_list">My List</string>
+    <string name="sample_genres_movie_home">Sample genres</string>
+    <string name="sample_title_movie_home">Sample Title</string>
+</resources>
