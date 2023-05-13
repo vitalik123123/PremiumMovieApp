@@ -5,4 +5,8 @@
     <string name="name_button_add_list">My List</string>
     <string name="sample_genres_movie_home">Sample genres</string>
     <string name="sample_title_movie_home">Sample Title</string>
+    <string name="top_10_movies">Top 10 Popular Movies</string>
+    <string name="top_10_tvs">Top 10 Popular TVs</string>
+    <string name="see_all">See all</string>
+    <string name="sample_rating">9.0</string>
 </resources>

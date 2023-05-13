@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.premiummovieapp.data.model.BoxOfficeWeekendDataDetail
+import com.example.premiummovieapp.data.model.MostPopularDataDetail
 import com.example.premiummovieapp.data.repositories.MovieRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -20,14 +21,16 @@ class HomeViewModel @AssistedInject constructor(
     val state = MutableStateFlow(value = MyState())
 
     init {
-        fetchLeaderBoxOffice()
+        fetchApi()
     }
 
-    private fun fetchLeaderBoxOffice(){
+    private fun fetchApi(){
         viewModelScope.launch {
             state.update { ui ->
                 ui.copy(
-                    leaderBoxOffice = movieRepository.getLeaderBoxOffice()
+                    leaderBoxOffice = movieRepository.getLeaderBoxOffice(),
+                    top10PopularMovies = movieRepository.getTop10PopularMovies(),
+                    top10PopularTVs = movieRepository.getTop10PopularTVs()
                 )
             }
         }
@@ -39,6 +42,8 @@ class HomeViewModel @AssistedInject constructor(
     }
 
     data class MyState(
-        val leaderBoxOffice: BoxOfficeWeekendDataDetail = BoxOfficeWeekendDataDetail()
+        val leaderBoxOffice: BoxOfficeWeekendDataDetail = BoxOfficeWeekendDataDetail(),
+        val top10PopularMovies: List<MostPopularDataDetail> = emptyList(),
+        val top10PopularTVs: List<MostPopularDataDetail> = emptyList()
     )
 }
