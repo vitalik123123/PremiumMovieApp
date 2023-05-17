@@ -10,4 +10,8 @@ interface MovieRepository {
     suspend fun getTop10PopularMovies(): List<MostPopularDataDetail>
 
     suspend fun getTop10PopularTVs(): List<MostPopularDataDetail>
+
+    suspend fun getMostPopularMovies(): List<MostPopularDataDetail>
+
+    suspend fun getMostPopularTVs(): List<MostPopularDataDetail>
 }

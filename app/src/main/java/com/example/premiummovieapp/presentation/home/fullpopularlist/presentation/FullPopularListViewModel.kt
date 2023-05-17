@@ -1,9 +1,8 @@
-package com.example.premiummovieapp.presentation.home.presentation
+package com.example.premiummovieapp.presentation.home.fullpopularlist.presentation
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.premiummovieapp.data.model.BoxOfficeWeekendDataDetail
 import com.example.premiummovieapp.data.model.MostPopularDataDetail
 import com.example.premiummovieapp.data.repositories.MovieRepository
 import dagger.assisted.Assisted
@@ -13,10 +12,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class HomeViewModel @AssistedInject constructor(
+class FullPopularListViewModel @AssistedInject constructor(
     @Assisted savedStateHandle: SavedStateHandle,
     private val movieRepository: MovieRepository
-): ViewModel() {
+) : ViewModel() {
 
     val state = MutableStateFlow(value = MyState())
 
@@ -24,13 +23,12 @@ class HomeViewModel @AssistedInject constructor(
         fetchApi()
     }
 
-    private fun fetchApi(){
+    private fun fetchApi() {
         viewModelScope.launch {
             state.update { ui ->
                 ui.copy(
-                    leaderBoxOffice = movieRepository.getLeaderBoxOffice(),
-                    top10PopularMovies = movieRepository.getTop10PopularMovies(),
-                    top10PopularTVs = movieRepository.getTop10PopularTVs()
+                    fullPopularListMovies = movieRepository.getMostPopularMovies(),
+                    fullPopularListTVs = movieRepository.getMostPopularTVs()
                 )
             }
         }
@@ -38,12 +36,11 @@ class HomeViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(savedStateHandle: SavedStateHandle): HomeViewModel
+        fun create(savedStateHandle: SavedStateHandle): FullPopularListViewModel
     }
 
     data class MyState(
-        val leaderBoxOffice: BoxOfficeWeekendDataDetail = BoxOfficeWeekendDataDetail(),
-        val top10PopularMovies: List<MostPopularDataDetail> = emptyList(),
-        val top10PopularTVs: List<MostPopularDataDetail> = emptyList()
+        val fullPopularListMovies: List<MostPopularDataDetail> = emptyList(),
+        val fullPopularListTVs: List<MostPopularDataDetail> = emptyList()
     )
 }

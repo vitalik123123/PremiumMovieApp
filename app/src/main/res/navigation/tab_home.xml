@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.premiummovieapp.presentation.home.ui.HomeFragment"
+        android:name="com.example.premiummovieapp.presentation.home.home.ui.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -16,7 +16,11 @@
     </fragment>
     <fragment
         android:id="@+id/fullPopularListFragment"
-        android:name="com.example.premiummovieapp.FullPopularListFragment"
+        android:name="com.example.premiummovieapp.presentation.home.fullpopularlist.ui.FullPopularListFragment"
         android:label="fragment_full_popular_list"
-        tools:layout="@layout/fragment_full_popular_list" />
+        tools:layout="@layout/fragment_full_popular_list" >
+        <argument
+            android:name="openType"
+            app:argType="string" />
+    </fragment>
 </navigation>

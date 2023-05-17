@@ -16,24 +16,12 @@ class BottomNavigationView : Fragment(R.layout.fragment_bottom_navigation_view) 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        WindowInsetsControllerCompat(
-//            requireActivity().window,
-//            requireActivity().window.decorView
-//        ).isAppearanceLightStatusBars = true
-
-
         val navHost = childFragmentManager.findFragmentById(R.id.containerOnBottomNavigation) as NavHostFragment
 
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             NavigationUI.onNavDestinationSelected(item, navHost.navController)
 
             return@setOnItemSelectedListener true
-        }
-    }
-
-    companion object {
-        fun newInstance() = BottomNavigationView().apply {
-            arguments = Bundle().apply {}
         }
     }
 }

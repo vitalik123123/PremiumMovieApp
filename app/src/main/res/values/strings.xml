@@ -9,4 +9,8 @@
     <string name="top_10_tvs">Top 10 Popular TVs</string>
     <string name="see_all">See all</string>
     <string name="sample_rating">9.0</string>
+    <string name="most_popular_movies_this_week">Most Popular Movies This Week</string>
+    <string name="most_popular_tvs_this_week">Most Popular TVs This Week</string>
+    <string name="coming_soon">Coming Soon</string>
+    <string name="rank_and_title_item_full_popular">1(+10) Title</string>
 </resources>

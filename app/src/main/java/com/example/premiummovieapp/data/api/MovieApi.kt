@@ -16,7 +16,7 @@ interface MovieApi {
     suspend fun getMostPopularTVs():MostPopularData
 
     companion object {
-        const val API_KEY = "k_bft5158d"
+        const val API_KEY = "k_bft5158d" // "k_bft5158d" , "k_203vt880"
         const val BASE_URL = "https://imdb-api.com/en/API/"
     }
 }
