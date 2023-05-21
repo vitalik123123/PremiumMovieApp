@@ -2,6 +2,7 @@ package com.example.premiummovieapp.data.repositories
 
 import com.example.premiummovieapp.data.model.BoxOfficeWeekendDataDetail
 import com.example.premiummovieapp.data.model.MostPopularDataDetail
+import com.example.premiummovieapp.data.model.NewMovieDataDetail
 
 interface MovieRepository {
 
@@ -14,4 +15,6 @@ interface MovieRepository {
     suspend fun getMostPopularMovies(): List<MostPopularDataDetail>
 
     suspend fun getMostPopularTVs(): List<MostPopularDataDetail>
+
+    suspend fun getComingSoon(): List<NewMovieDataDetail>
 }

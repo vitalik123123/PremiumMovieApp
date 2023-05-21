@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.premiummovieapp.data.model.MostPopularDataDetail
+import com.example.premiummovieapp.data.model.NewMovieDataDetail
 import com.example.premiummovieapp.data.repositories.MovieRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -34,6 +35,16 @@ class FullPopularListViewModel @AssistedInject constructor(
         }
     }
 
+    fun fetchComingSoonList(){
+        viewModelScope.launch {
+            state.update {ui ->
+                ui.copy(
+                    comingSoonList = movieRepository.getComingSoon()
+                )
+            }
+        }
+    }
+
     @AssistedFactory
     interface Factory {
         fun create(savedStateHandle: SavedStateHandle): FullPopularListViewModel
@@ -41,6 +52,7 @@ class FullPopularListViewModel @AssistedInject constructor(
 
     data class MyState(
         val fullPopularListMovies: List<MostPopularDataDetail> = emptyList(),
-        val fullPopularListTVs: List<MostPopularDataDetail> = emptyList()
+        val fullPopularListTVs: List<MostPopularDataDetail> = emptyList(),
+        val comingSoonList: List<NewMovieDataDetail> = emptyList()
     )
 }

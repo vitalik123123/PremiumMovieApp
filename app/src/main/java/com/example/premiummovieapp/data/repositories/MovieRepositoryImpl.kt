@@ -2,6 +2,7 @@ package com.example.premiummovieapp.data.repositories
 
 import com.example.premiummovieapp.data.model.BoxOfficeWeekendDataDetail
 import com.example.premiummovieapp.data.model.MostPopularDataDetail
+import com.example.premiummovieapp.data.model.NewMovieDataDetail
 import com.example.premiummovieapp.data.repositories.remote.MovieRemoteDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -30,4 +31,6 @@ class MovieRepositoryImpl(private val movieRemoteDataSource: MovieRemoteDataSour
 
     override suspend fun getMostPopularTVs(): List<MostPopularDataDetail> = mostPopularTVs()
 
+    override suspend fun getComingSoon(): List<NewMovieDataDetail> =
+        movieRemoteDataSource.getComingSoon().content
 }

@@ -13,4 +13,7 @@
     <string name="most_popular_tvs_this_week">Most Popular TVs This Week</string>
     <string name="coming_soon">Coming Soon</string>
     <string name="rank_and_title_item_full_popular">1(+10) Title</string>
+    <string name="title_item_coming_soon">Title</string>
+    <string name="release_item_coming_soon">Jan 01, 2000</string>
+    <string name="genres_item_coming_soon">Action</string>
 </resources>
