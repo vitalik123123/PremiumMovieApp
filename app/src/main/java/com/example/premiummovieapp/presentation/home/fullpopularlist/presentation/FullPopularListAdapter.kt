@@ -64,6 +64,10 @@ class FullPopularListAdapter() : RecyclerView.Adapter<FullPopularListAdapter.Vie
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .transform(CenterCrop(), RoundedCorners(16))
                 .into(imPosterItemFullPopular)
+
+            itemView.setOnClickListener {
+                listener?.onClick(model.id)
+            }
         }
 
         private fun upAndDownColor(upDown: String): Int {

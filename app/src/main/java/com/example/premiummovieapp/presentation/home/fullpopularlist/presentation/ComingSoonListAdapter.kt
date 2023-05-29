@@ -15,22 +15,26 @@ import com.example.premiummovieapp.R
 import com.example.premiummovieapp.data.model.NewMovieDataDetail
 import com.example.premiummovieapp.databinding.ComingSoonItemRecyclerBinding
 
-class ComingSoonListAdapter(): RecyclerView.Adapter<ComingSoonListAdapter.ViewHolder>() {
+class ComingSoonListAdapter() : RecyclerView.Adapter<ComingSoonListAdapter.ViewHolder>() {
 
     private var moviesList: List<NewMovieDataDetail> = emptyList()
     private var listener: OnItemClickListener? = null
 
-    fun setData(_moviesList: List<NewMovieDataDetail>){
+    fun setData(_moviesList: List<NewMovieDataDetail>) {
         moviesList = _moviesList
         notifyDataSetChanged()
     }
 
-    fun setOnCLickListener(_listener: OnItemClickListener){
+    fun setOnCLickListener(_listener: OnItemClickListener) {
         listener = _listener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ComingSoonItemRecyclerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ComingSoonItemRecyclerBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return ViewHolder(binding)
     }
 
@@ -40,7 +44,8 @@ class ComingSoonListAdapter(): RecyclerView.Adapter<ComingSoonListAdapter.ViewHo
         holder.bind(model = moviesList[position])
     }
 
-    inner class ViewHolder(private val binding: ComingSoonItemRecyclerBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: ComingSoonItemRecyclerBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(model: NewMovieDataDetail) = with(binding) {
             tvTitleItemComingSoon.text = model.title
@@ -51,10 +56,14 @@ class ComingSoonListAdapter(): RecyclerView.Adapter<ComingSoonListAdapter.ViewHo
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .transform(CenterCrop(), RoundedCorners(16))
                 .into(ivPosterItemComingSoon)
+
+            itemView.setOnClickListener {
+                listener?.onClick(model.id)
+            }
         }
     }
 
-    interface OnItemClickListener{
+    interface OnItemClickListener {
         fun onClick(modelId: String)
     }
 }

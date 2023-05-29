@@ -35,9 +35,9 @@ class FullPopularListViewModel @AssistedInject constructor(
         }
     }
 
-    fun fetchComingSoonList(){
+    fun fetchComingSoonList() {
         viewModelScope.launch {
-            state.update {ui ->
+            state.update { ui ->
                 ui.copy(
                     comingSoonList = movieRepository.getComingSoon()
                 )

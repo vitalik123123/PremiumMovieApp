@@ -10,7 +10,7 @@ import androidx.savedstate.SavedStateRegistryOwner
 class ViewModelFactory<T : ViewModel>(
     savedStateRegistryOwner: SavedStateRegistryOwner,
     private val create: (stateHandel: SavedStateHandle) -> T
-): AbstractSavedStateViewModelFactory(savedStateRegistryOwner, null) {
+) : AbstractSavedStateViewModelFactory(savedStateRegistryOwner, null) {
     override fun <T : ViewModel> create(
         key: String,
         modelClass: Class<T>,
@@ -18,7 +18,7 @@ class ViewModelFactory<T : ViewModel>(
     ): T = create.invoke(handle) as T
 }
 
-inline fun <reified T: ViewModel> Fragment.lazyViewModel(
+inline fun <reified T : ViewModel> Fragment.lazyViewModel(
     noinline create: (stateHandel: SavedStateHandle) -> T
 ) = viewModels<T> {
     ViewModelFactory(this, create)

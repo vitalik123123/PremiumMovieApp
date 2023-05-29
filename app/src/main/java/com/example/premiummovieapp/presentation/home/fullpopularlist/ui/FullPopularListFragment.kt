@@ -18,13 +18,16 @@ import com.example.premiummovieapp.presentation.home.fullpopularlist.presentatio
 import com.example.premiummovieapp.presentation.home.fullpopularlist.presentation.FullPopularListAdapter
 import com.example.premiummovieapp.presentation.home.fullpopularlist.presentation.FullPopularListViewModel
 import com.example.premiummovieapp.presentation.lazyViewModel
+import com.example.premiummovieapp.presentation.main.BottomNavigationViewDirections
+import com.example.premiummovieapp.presentation.main.findTopNavController
+import com.example.premiummovieapp.presentation.main.getAppComponent
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class FullPopularListFragment : Fragment(R.layout.fragment_full_popular_list) {
 
     private val viewModel: FullPopularListViewModel by lazyViewModel { stateHandel ->
-        (activity?.application as MovieApp).appComponent.injectFullPopularListViewModel()
+        getAppComponent().injectFullPopularListViewModel()
             .create(stateHandel)
     }
     private val binding: FragmentFullPopularListBinding by viewBinding()
@@ -47,17 +50,20 @@ class FullPopularListFragment : Fragment(R.layout.fragment_full_popular_list) {
         binding.backFullPopular.setOnClickListener {
             findNavController().popBackStack()
         }
+
+        fullPopularAdapter.setOnClickListener(onClickPopular)
+        comingSoonAdapter.setOnCLickListener(onClickSoon)
     }
 
-    private fun initUi(){
-
-        viewModel.state.onEach {state ->
+    private fun initUi() {
+        viewModel.state.onEach { state ->
             when (args.openType) {
                 MOST_POPULAR_MOVIES -> {
                     binding.rvContentFullPopular.adapter = fullPopularAdapter
                     layoutManagerFullPopular = GridLayoutManager(context, 2)
                     binding.rvContentFullPopular.layoutManager = layoutManagerFullPopular
-                    binding.tvHeaderFullPopular.text = resources.getText(R.string.most_popular_movies_this_week)
+                    binding.tvHeaderFullPopular.text =
+                        resources.getText(R.string.most_popular_movies_this_week)
                     fullPopularAdapter.setData(state.fullPopularListMovies)
                 }
 
@@ -65,7 +71,8 @@ class FullPopularListFragment : Fragment(R.layout.fragment_full_popular_list) {
                     binding.rvContentFullPopular.adapter = fullPopularAdapter
                     layoutManagerFullPopular = GridLayoutManager(context, 2)
                     binding.rvContentFullPopular.layoutManager = layoutManagerFullPopular
-                    binding.tvHeaderFullPopular.text = resources.getText(R.string.most_popular_tvs_this_week)
+                    binding.tvHeaderFullPopular.text =
+                        resources.getText(R.string.most_popular_tvs_this_week)
                     fullPopularAdapter.setData(state.fullPopularListTVs)
                 }
 
@@ -74,13 +81,34 @@ class FullPopularListFragment : Fragment(R.layout.fragment_full_popular_list) {
                         viewModel.fetchComingSoonList()
                     }
                     binding.rvContentFullPopular.adapter = comingSoonAdapter
-                    layoutManagerComingSoon = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                    layoutManagerComingSoon =
+                        LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                     binding.rvContentFullPopular.layoutManager = layoutManagerComingSoon
                     binding.tvHeaderFullPopular.text = resources.getText(R.string.coming_soon)
                     comingSoonAdapter.setData(state.comingSoonList)
                 }
             }
         }.launchIn(lifecycleScope)
+    }
+
+    private val onClickSoon = object : ComingSoonListAdapter.OnItemClickListener {
+        override fun onClick(modelId: String) {
+            actionToMovieDetails(modelId)
+        }
+    }
+
+    private val onClickPopular = object : FullPopularListAdapter.OnItemClickListener {
+        override fun onClick(modelId: String) {
+            actionToMovieDetails(modelId)
+        }
+    }
+
+    private fun actionToMovieDetails(id: String) {
+        findTopNavController().navigate(
+            BottomNavigationViewDirections.actionBottomNavigationViewToMovieDetailsFragment(
+                id
+            )
+        )
     }
 
     companion object {

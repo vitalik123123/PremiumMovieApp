@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel @AssistedInject constructor(
     @Assisted savedStateHandle: SavedStateHandle,
     private val movieRepository: MovieRepository
-): ViewModel() {
+) : ViewModel() {
 
     val state = MutableStateFlow(value = MyState())
 
@@ -24,7 +24,7 @@ class HomeViewModel @AssistedInject constructor(
         fetchApi()
     }
 
-    private fun fetchApi(){
+    private fun fetchApi() {
         viewModelScope.launch {
             state.update { ui ->
                 ui.copy(

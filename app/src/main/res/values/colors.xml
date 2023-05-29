@@ -8,4 +8,5 @@
     <color name="transparent">#00000000</color>
     <color name="up_color_for_full_list">#388E3C</color>
     <color name="down_color_for_full_list">#FD0303</color>
+    <color name="imdb_yellow">#FFEA00</color>
 </resources>

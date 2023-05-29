@@ -28,7 +28,8 @@ class HomeAdapter() : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = HomeItemRecyclerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            HomeItemRecyclerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
@@ -38,7 +39,8 @@ class HomeAdapter() : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
         holder.bind(model = moviesList[position])
     }
 
-    inner class ViewHolder(private val binding: HomeItemRecyclerBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: HomeItemRecyclerBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(model: MostPopularDataDetail) = with(binding) {
             tvHomeItemRating.text = model.imdbRating
@@ -47,6 +49,10 @@ class HomeAdapter() : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .transform(CenterCrop(), RoundedCorners(16))
                 .into(imHomeItemPoster)
+
+            itemView.setOnClickListener {
+                listener?.onClick(model.id)
+            }
         }
     }
 
