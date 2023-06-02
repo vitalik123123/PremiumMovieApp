@@ -17,6 +17,7 @@
     <string name="sample_number_episodes">e.</string>
     <string name="sample_description">Description: </string>
     <string name="episodes_movie_details">Episodes</string>
+    <string name="more_like_this_movie_details">More Like This</string>
     <string name="choose_season_movie_details">Season</string>
     <string name="choose_season_movie_details_alert_dialog">Choose season</string>
     <string name="most_popular_movies_this_week">Most Popular Movies This Week</string>

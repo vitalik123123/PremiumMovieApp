@@ -16,6 +16,7 @@ import com.example.premiummovieapp.R
 import com.example.premiummovieapp.databinding.FragmentMovieDetailsBinding
 import com.example.premiummovieapp.presentation.details.moviedetails.presentation.MovieDetailsCastAdapter
 import com.example.premiummovieapp.presentation.details.moviedetails.presentation.MovieDetailsEpisodesAdapter
+import com.example.premiummovieapp.presentation.details.moviedetails.presentation.MovieDetailsMoreLikeThisAdapter
 import com.example.premiummovieapp.presentation.details.moviedetails.presentation.MovieDetailsViewModel
 import com.example.premiummovieapp.presentation.lazyViewModel
 import com.example.premiummovieapp.presentation.main.getAppComponent
@@ -31,8 +32,13 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
     private val binding: FragmentMovieDetailsBinding by viewBinding()
     private val args: MovieDetailsFragmentArgs by navArgs()
     private val movieDetailsCastAdapter: MovieDetailsCastAdapter = MovieDetailsCastAdapter()
+    private lateinit var movieDetailsCastLayoutManager: LinearLayoutManager
     private val movieDetailsEpisodesAdapter: MovieDetailsEpisodesAdapter =
         MovieDetailsEpisodesAdapter()
+    private lateinit var movieDetailsEpisodesLayoutManager: LinearLayoutManager
+    private val movieDetailsMoreLikeThisAdapter: MovieDetailsMoreLikeThisAdapter =
+        MovieDetailsMoreLikeThisAdapter()
+    private lateinit var movieDetailsMoreLikeThisLayoutManager: LinearLayoutManager
     private var currentSeason: String = "1"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,13 +53,20 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
         binding.backMovieDetails.setOnClickListener {
             findNavController().popBackStack()
         }
+
+        movieDetailsMoreLikeThisAdapter.setOnClickListener(onClickMoreLikeThis)
     }
 
     private fun initUi() {
         viewModel.fetchApi(args.contentId)
         binding.rvMovieDetailsCast.adapter = movieDetailsCastAdapter
-        binding.rvMovieDetailsCast.layoutManager =
+        movieDetailsCastLayoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.rvMovieDetailsCast.layoutManager = movieDetailsCastLayoutManager
+        binding.rvMovieDetailsMoreLikeThis.adapter = movieDetailsMoreLikeThisAdapter
+        movieDetailsMoreLikeThisLayoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.rvMovieDetailsMoreLikeThis.layoutManager = movieDetailsMoreLikeThisLayoutManager
 
         viewModel.state.onEach { state ->
             binding.apply {
@@ -65,8 +78,9 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
                         resources.getString(R.string.choose_season_movie_details)
                             .plus(" $currentSeason")
                     binding.rvMovieDetailsEpisodes.adapter = movieDetailsEpisodesAdapter
-                    binding.rvMovieDetailsEpisodes.layoutManager =
+                    movieDetailsEpisodesLayoutManager =
                         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                    binding.rvMovieDetailsEpisodes.layoutManager = movieDetailsEpisodesLayoutManager
                     movieDetailsEpisodesAdapter.setData(state.episodesList)
                     tvMovieDetailsChooseSeason.setOnClickListener {
                         showListSeasonAlert(state.seasonsList, state.content.id)
@@ -94,8 +108,19 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
                     }.show()
                 }
                 movieDetailsCastAdapter.setData(state.castList)
+                movieDetailsMoreLikeThisAdapter.setData(state.moreLikeThisList)
             }
         }.launchIn(lifecycleScope)
+    }
+
+    private val onClickMoreLikeThis = object : MovieDetailsMoreLikeThisAdapter.OnItemClickListener {
+        override fun onClick(modelId: String) {
+            binding.rvMovieDetailsCast.scrollToPosition(0)
+            binding.rvMovieDetailsEpisodes.scrollToPosition(0)
+            binding.rvMovieDetailsMoreLikeThis.scrollToPosition(0)
+            viewModel.fetchApi(modelId)
+        }
+
     }
 
     private fun showListSeasonAlert(list: Array<String>, id: String) {

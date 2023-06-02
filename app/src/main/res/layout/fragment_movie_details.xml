@@ -112,6 +112,7 @@
             android:id="@+id/tvMovieDetailsRuntime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:text="@string/sample_runtime"
             android:textSize="18sp"
@@ -124,6 +125,7 @@
             android:id="@+id/tvMovieDetailsCompany"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:ellipsize="end"
             android:maxWidth="160dp"
@@ -131,7 +133,6 @@
             android:text="@string/sample_company"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tvMovieDetailsRuntime"
             app:layout_constraintTop_toBottomOf="@id/tvMovieDetailsTitle" />
 
@@ -213,8 +214,29 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvMovieDetailsEpisodesInChooseSeason" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvMovieDetailsMoreLikeThis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/more_like_this_movie_details"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/frameMovieDetailsTVsContent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvMovieDetailsMoreLikeThis"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvMovieDetailsMoreLikeThis" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

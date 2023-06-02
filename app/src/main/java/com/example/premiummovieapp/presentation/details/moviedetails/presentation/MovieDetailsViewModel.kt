@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.premiummovieapp.data.model.CastList
+import com.example.premiummovieapp.data.model.MoreLikeThisList
 import com.example.premiummovieapp.data.model.SeasonEpisodesInfo
 import com.example.premiummovieapp.data.model.TitleData
 import com.example.premiummovieapp.data.repositories.MovieRepository
@@ -45,7 +46,8 @@ class MovieDetailsViewModel @AssistedInject constructor(
                         content = content,
                         typeMovie = type,
                         company = content.companyList.first().companyName,
-                        castList = content.castList.take(10)
+                        castList = content.castList.take(10),
+                        moreLikeThisList = content.moreLikeThisList
                     )
                 }
             }
@@ -75,6 +77,7 @@ class MovieDetailsViewModel @AssistedInject constructor(
         val company: String = "company",
         val castList: List<CastList> = emptyList(),
         val seasonsList: Array<String> = arrayOf("1"),
-        val episodesList: List<SeasonEpisodesInfo> = emptyList()
+        val episodesList: List<SeasonEpisodesInfo> = emptyList(),
+        val moreLikeThisList: List<MoreLikeThisList> = emptyList()
     )
 }
