@@ -19,10 +19,12 @@ import com.example.premiummovieapp.presentation.home.fullpopularlist.presentatio
 import com.example.premiummovieapp.presentation.home.fullpopularlist.presentation.FullPopularListViewModel
 import com.example.premiummovieapp.presentation.lazyViewModel
 import com.example.premiummovieapp.presentation.main.BottomNavigationViewDirections
+import com.example.premiummovieapp.presentation.main.connectivity.ConnectivityStatus
 import com.example.premiummovieapp.presentation.main.findTopNavController
 import com.example.premiummovieapp.presentation.main.getAppComponent
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
 class FullPopularListFragment : Fragment(R.layout.fragment_full_popular_list) {
 
@@ -36,6 +38,13 @@ class FullPopularListFragment : Fragment(R.layout.fragment_full_popular_list) {
     private lateinit var layoutManagerFullPopular: RecyclerView.LayoutManager
     private var comingSoonAdapter: ComingSoonListAdapter = ComingSoonListAdapter()
     private lateinit var layoutManagerComingSoon: RecyclerView.LayoutManager
+    @Inject
+    lateinit var connectivityStatus: ConnectivityStatus
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        getAppComponent().injectFullPopularListFragment(this)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -45,7 +54,14 @@ class FullPopularListFragment : Fragment(R.layout.fragment_full_popular_list) {
             view
         ).isAppearanceLightStatusBars = true
 
-        initUi()
+        connectivityStatus.observe(viewLifecycleOwner) { isConnected ->
+            if (isConnected) {
+                initUi()
+            }else {
+                binding.layoutMainFullPopularragment.visibility = View.GONE
+                binding.layoutErrorFullPopularFragment.visibility = View.VISIBLE
+            }
+        }
 
         binding.backFullPopular.setOnClickListener {
             findNavController().popBackStack()
@@ -56,6 +72,8 @@ class FullPopularListFragment : Fragment(R.layout.fragment_full_popular_list) {
     }
 
     private fun initUi() {
+        binding.layoutMainFullPopularragment.visibility = View.VISIBLE
+        binding.layoutErrorFullPopularFragment.visibility = View.GONE
         viewModel.state.onEach { state ->
             when (args.openType) {
                 MOST_POPULAR_MOVIES -> {

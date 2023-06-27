@@ -1,11 +1,9 @@
 package com.example.premiummovieapp.presentation.home.home.ui
 
-import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,17 +12,18 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.premiummovieapp.R
-import com.example.premiummovieapp.app.MovieApp
 import com.example.premiummovieapp.databinding.FragmentHomeBinding
 import com.example.premiummovieapp.presentation.home.fullpopularlist.ui.FullPopularListFragment
 import com.example.premiummovieapp.presentation.home.home.presentation.HomeAdapter
 import com.example.premiummovieapp.presentation.home.home.presentation.HomeViewModel
 import com.example.premiummovieapp.presentation.lazyViewModel
 import com.example.premiummovieapp.presentation.main.BottomNavigationViewDirections
+import com.example.premiummovieapp.presentation.main.connectivity.ConnectivityStatus
 import com.example.premiummovieapp.presentation.main.findTopNavController
 import com.example.premiummovieapp.presentation.main.getAppComponent
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -37,6 +36,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private var homeTopPopularTVsAdapter: HomeAdapter = HomeAdapter()
     private lateinit var layoutManagerPopularMovies: RecyclerView.LayoutManager
     private lateinit var layoutManagerPopularTVs: RecyclerView.LayoutManager
+    @Inject
+    lateinit var connectivityStatus: ConnectivityStatus
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        getAppComponent().injectHomeFragment(this)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,7 +50,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             requireActivity().window,
             view
         ).isAppearanceLightStatusBars = false
-        initUi()
+        connectivityStatus.observe(viewLifecycleOwner) { isConnected ->
+            if (isConnected) {
+                initUi()
+            }else {
+                binding.layoutMainHomeFragment.visibility = View.GONE
+                binding.layoutErrorHomeFragment.visibility = View.VISIBLE
+            }
+        }
 
         binding.ivHomeMainMovie.setOnClickListener {
             actionToMovieDetails(viewModel.state.value.leaderBoxOffice.id)
@@ -75,19 +88,21 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.rvHomeTopMovies.layoutManager = layoutManagerPopularMovies
         binding.rvHomeTopTVs.layoutManager = layoutManagerPopularTVs
+        binding.layoutMainHomeFragment.visibility = View.VISIBLE
+        binding.layoutErrorHomeFragment.visibility = View.GONE
         viewModel.state.onEach { state ->
-            binding.tvHomeTitleMovie.text = state.leaderBoxOffice.title
-            binding.tvHomeEarnMovie.text =
-                resources.getString(R.string.sample_earnings_movie_home).plus(" ")
-                    .plus(state.leaderBoxOffice.weekend)
-            Glide.with(this)
-                .load(state.leaderBoxOffice.image)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .centerCrop()
-                .into(binding.ivHomeMainMovie)
+                binding.tvHomeTitleMovie.text = state.leaderBoxOffice.title
+                binding.tvHomeEarnMovie.text =
+                    resources.getString(R.string.sample_earnings_movie_home).plus(" ")
+                        .plus(state.leaderBoxOffice.weekend)
+                Glide.with(this)
+                    .load(state.leaderBoxOffice.image)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .centerCrop()
+                    .into(binding.ivHomeMainMovie)
 
-            homeTopPopularMoviesAdapter.setData(state.top10PopularMovies)
-            homeTopPopularTVsAdapter.setData(state.top10PopularTVs)
+                homeTopPopularMoviesAdapter.setData(state.top10PopularMovies)
+                homeTopPopularTVsAdapter.setData(state.top10PopularTVs)
         }.launchIn(lifecycleScope)
     }
 

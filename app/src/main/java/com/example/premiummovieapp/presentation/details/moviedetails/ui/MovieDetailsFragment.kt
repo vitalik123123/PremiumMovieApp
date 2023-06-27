@@ -19,10 +19,12 @@ import com.example.premiummovieapp.presentation.details.moviedetails.presentatio
 import com.example.premiummovieapp.presentation.details.moviedetails.presentation.MovieDetailsMoreLikeThisAdapter
 import com.example.premiummovieapp.presentation.details.moviedetails.presentation.MovieDetailsViewModel
 import com.example.premiummovieapp.presentation.lazyViewModel
+import com.example.premiummovieapp.presentation.main.connectivity.ConnectivityStatus
 import com.example.premiummovieapp.presentation.main.getAppComponent
 import com.stfalcon.imageviewer.StfalconImageViewer
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
 class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
 
@@ -40,6 +42,13 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
         MovieDetailsMoreLikeThisAdapter()
     private lateinit var movieDetailsMoreLikeThisLayoutManager: LinearLayoutManager
     private var currentSeason: String = "1"
+    @Inject
+    lateinit var connectivityStatus: ConnectivityStatus
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        getAppComponent().injectMovieDetailsFragment(this)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,7 +57,14 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
             view
         ).isAppearanceLightStatusBars = false
 
-        initUi()
+        connectivityStatus.observe(viewLifecycleOwner) { isConnected ->
+            if (isConnected) {
+                initUi()
+            }else {
+                binding.layoutMainMovieDetailsFragment.visibility = View.GONE
+                binding.layoutErrorMovieDetailsFragment.visibility = View.VISIBLE
+            }
+        }
 
         binding.backMovieDetails.setOnClickListener {
             findNavController().popBackStack()
@@ -67,6 +83,8 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
         movieDetailsMoreLikeThisLayoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.rvMovieDetailsMoreLikeThis.layoutManager = movieDetailsMoreLikeThisLayoutManager
+        binding.layoutMainMovieDetailsFragment.visibility = View.VISIBLE
+        binding.layoutErrorMovieDetailsFragment.visibility = View.GONE
 
         viewModel.state.onEach { state ->
             binding.apply {
@@ -87,13 +105,17 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
                     }
                 }
                 tvMovieDetailsTitle.text = state.content.title
+
                 tvMovieDetailsImdbRating.text = state.content.imdbRating
                 tvMovieDetailsYear.text = state.content.year
                 tvMovieDetailsRuntime.text = state.content.runtime
                 tvMovieDetailsCompany.text = state.company
+
                 tvMovieDetailsGenres.text =
                     resources.getString(R.string.sample_genres).plus(" ").plus(state.content.genres)
+
                 tvMovieDetailsDescription.text = state.content.description
+
                 Glide.with(this@MovieDetailsFragment)
                     .load(state.content.image)
                     .centerCrop()
@@ -107,6 +129,7 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
                         Glide.with(requireContext()).load(image).into(imageView!!)
                     }.show()
                 }
+
                 movieDetailsCastAdapter.setData(state.castList)
                 movieDetailsMoreLikeThisAdapter.setData(state.moreLikeThisList)
             }
@@ -115,6 +138,7 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
 
     private val onClickMoreLikeThis = object : MovieDetailsMoreLikeThisAdapter.OnItemClickListener {
         override fun onClick(modelId: String) {
+            currentSeason = "1"
             binding.rvMovieDetailsCast.scrollToPosition(0)
             binding.rvMovieDetailsEpisodes.scrollToPosition(0)
             binding.rvMovieDetailsMoreLikeThis.scrollToPosition(0)
