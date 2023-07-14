@@ -3,10 +3,11 @@ package com.example.premiummovieapp.presentation.details.moviedetails.presentati
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.premiummovieapp.data.model.CastList
-import com.example.premiummovieapp.data.model.MoreLikeThisList
-import com.example.premiummovieapp.data.model.SeasonEpisodesInfo
-import com.example.premiummovieapp.data.model.TitleData
+import com.example.premiummovieapp.data.model.details.FilmCast
+import com.example.premiummovieapp.data.model.details.FilmDataDetails
+import com.example.premiummovieapp.data.model.details.FilmSequelsAndPrequels
+import com.example.premiummovieapp.data.model.details.FilmSimilars
+import com.example.premiummovieapp.data.model.details.ProfessionKey
 import com.example.premiummovieapp.data.repositories.MovieRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -22,44 +23,18 @@ class MovieDetailsViewModel @AssistedInject constructor(
 
     val state = MutableStateFlow(value = MyState())
 
-    fun fetchApi(id: String) {
+    fun fetchApi(id: Int) {
         viewModelScope.launch {
+            state.update { ui ->
 
-            movieRepository.getMoviesDetails(id).let { content ->
-
-                var type = true
-                when (content.type) {
-                    "Movie" -> type = true
-                    "TVSeries" -> {
-                        type = false
-                        getEpisodes(id = content.id, seasonNumber = "1")
-                        state.update { ui ->
-                            ui.copy(
-                                seasonsList = content.tvSeriesInfo.tvSeriesInfoSeasons.toTypedArray()
-                            )
-                        }
-                    }
-                }
-
-                state.update { ui ->
+                movieRepository.getFilmDataDetails(id).let { content ->
                     ui.copy(
-                        content = content,
-                        typeMovie = type,
-                        company = content.companyList.first().companyName,
-                        castList = content.castList.take(10),
-                        moreLikeThisList = content.moreLikeThisList
-                    )
-                }
-            }
-        }
-    }
-
-    fun getEpisodes(id: String, seasonNumber: String) {
-        viewModelScope.launch {
-            movieRepository.getSeasonEpisodes(id, seasonNumber).let { content ->
-                state.update { ui ->
-                    ui.copy(
-                        episodesList = content.episodesInfo
+                        film = content!!,
+                        genresString = content.genres.joinToString { it.genre },
+                        filmCastList = movieRepository.getFilmCast(filmId = id)!!
+                            .filter { it.professionKey == ProfessionKey.ACTOR },
+                        filmSequelsAndPrequelsList = movieRepository.getFilmSequelsAndPrequels(id = id)!!,
+                        filmSimilars = movieRepository.getFilmSimilars(id = id)!!.filmSimilarsList
                     )
                 }
             }
@@ -72,12 +47,10 @@ class MovieDetailsViewModel @AssistedInject constructor(
     }
 
     data class MyState(
-        val content: TitleData = TitleData(),
-        val typeMovie: Boolean = true,
-        val company: String = "company",
-        val castList: List<CastList> = emptyList(),
-        val seasonsList: Array<String> = arrayOf("1"),
-        val episodesList: List<SeasonEpisodesInfo> = emptyList(),
-        val moreLikeThisList: List<MoreLikeThisList> = emptyList()
+        val film: FilmDataDetails = FilmDataDetails(),
+        val genresString: String = "",
+        val filmCastList: List<FilmCast> = emptyList(),
+        val filmSequelsAndPrequelsList: List<FilmSequelsAndPrequels>? = null,
+        val filmSimilars: List<FilmSimilars>? = null
     )
 }

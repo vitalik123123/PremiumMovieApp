@@ -1,44 +1,37 @@
 package com.example.premiummovieapp.data.repositories
 
-import com.example.premiummovieapp.data.model.BoxOfficeWeekendDataDetail
-import com.example.premiummovieapp.data.model.MostPopularDataDetail
-import com.example.premiummovieapp.data.model.NewMovieDataDetail
-import com.example.premiummovieapp.data.model.SeasonEpisodesData
-import com.example.premiummovieapp.data.model.TitleData
+import com.example.premiummovieapp.data.model.details.FilmCast
+import com.example.premiummovieapp.data.model.details.FilmDataDetails
+import com.example.premiummovieapp.data.model.FilmTopResponseData
+import com.example.premiummovieapp.data.model.details.FilmSequelsAndPrequels
+import com.example.premiummovieapp.data.model.details.FilmSimilarsResponseData
 import com.example.premiummovieapp.data.repositories.remote.MovieRemoteDataSource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 
 class MovieRepositoryImpl(private val movieRemoteDataSource: MovieRemoteDataSource) :
     MovieRepository {
 
-    private suspend fun mostPopularMovies(): List<MostPopularDataDetail> =
-        movieRemoteDataSource.getMostPopularMovies().content
+    override suspend fun getTopFilms(type: String, page: Int): FilmTopResponseData? =
+        movieRemoteDataSource.getTopFilms(type = type, page = page).body()
 
-    private suspend fun mostPopularTVs(): List<MostPopularDataDetail> =
-        movieRemoteDataSource.getMostPopularTVs().content
+    override suspend fun getFilmDataDetails(id: Int): FilmDataDetails? =
+        movieRemoteDataSource.getFilmDataDetails(id = id).body()
 
-    override suspend fun getLeaderBoxOffice(): BoxOfficeWeekendDataDetail =
-        movieRemoteDataSource.getBoxOffice().content.first()
+    override suspend fun getFilmCast(filmId: Int): List<FilmCast>? =
+        movieRemoteDataSource.getFilmCast(filmId = filmId).body()
 
-    override suspend fun getTop10PopularMovies(): List<MostPopularDataDetail> =
-        mostPopularMovies().take(10)
+    override suspend fun getFilmSequelsAndPrequels(id: Int): List<FilmSequelsAndPrequels>? {
+        return if (movieRemoteDataSource.getFilmSequelsAndPrequels(id = id).isSuccessful){
+            movieRemoteDataSource.getFilmSequelsAndPrequels(id = id).body()
+        } else {
+            emptyList()
+        }
+    }
 
-    override suspend fun getTop10PopularTVs(): List<MostPopularDataDetail> =
-        mostPopularTVs().take(10)
-
-    override suspend fun getMostPopularMovies(): List<MostPopularDataDetail> = mostPopularMovies()
-
-    override suspend fun getMostPopularTVs(): List<MostPopularDataDetail> = mostPopularTVs()
-
-    override suspend fun getComingSoon(): List<NewMovieDataDetail> =
-        movieRemoteDataSource.getComingSoon().content
-
-    override suspend fun getMoviesDetails(id: String): TitleData =
-        movieRemoteDataSource.getMoviesDetails(id)
-
-    override suspend fun getSeasonEpisodes(id: String, seasonNumber: String): SeasonEpisodesData =
-        movieRemoteDataSource.getSeasonEpisodes(id, seasonNumber)
+    override suspend fun getFilmSimilars(id: Int): FilmSimilarsResponseData? {
+        return if (movieRemoteDataSource.getFilmSimilars(id = id).isSuccessful){
+            movieRemoteDataSource.getFilmSimilars(id = id).body()
+        } else {
+            FilmSimilarsResponseData()
+        }
+    }
 }

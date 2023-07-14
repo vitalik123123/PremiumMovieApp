@@ -7,17 +7,16 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.premiummovieapp.R
-import com.example.premiummovieapp.data.model.SeasonEpisodesInfo
-import com.example.premiummovieapp.databinding.MoviesDetailsEpisodesItemRecyclerBinding
+import com.example.premiummovieapp.data.model.details.FilmSequelsAndPrequels
+import com.example.premiummovieapp.databinding.MoviesDetailsSequelsAndPrequelsItemRecyclerBinding
 
-class MovieDetailsEpisodesAdapter() :
-    RecyclerView.Adapter<MovieDetailsEpisodesAdapter.ViewHolder>() {
+class MovieDetailsSequelsAndPrequelsAdapter() :
+    RecyclerView.Adapter<MovieDetailsSequelsAndPrequelsAdapter.ViewHolder>() {
 
-    private var episodesList: List<SeasonEpisodesInfo> = emptyList()
+    private var episodesList: List<FilmSequelsAndPrequels> = emptyList()
     private var listener: OnItemClickListener? = null
 
-    fun setData(_episodesList: List<SeasonEpisodesInfo>) {
+    fun setData(_episodesList: List<FilmSequelsAndPrequels>) {
         episodesList = _episodesList
         notifyDataSetChanged()
     }
@@ -27,7 +26,7 @@ class MovieDetailsEpisodesAdapter() :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = MoviesDetailsEpisodesItemRecyclerBinding.inflate(
+        val binding = MoviesDetailsSequelsAndPrequelsItemRecyclerBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -41,24 +40,24 @@ class MovieDetailsEpisodesAdapter() :
         holder.bind(model = episodesList[position])
     }
 
-    inner class ViewHolder(private val binding: MoviesDetailsEpisodesItemRecyclerBinding) :
+    inner class ViewHolder(private val binding: MoviesDetailsSequelsAndPrequelsItemRecyclerBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(model: SeasonEpisodesInfo) = with(binding) {
-            tvMovieDetailsEpisodesItemTitle.text = model.infoTitle
-            tvMovieDetailsEpisodesItemRelease.text = model.infoReleased
-            tvMovieDetailsEpisodesItemRating.text = model.infoImdbRating
-            tvMovieDetailsEpisodesItemNumber.text =
-                "s.${model.infoSeasonNumber} e.${model.infoEpisodeNumber}"
+        fun bind(model: FilmSequelsAndPrequels) = with(binding) {
+            tvMovieDetailsSequelsAndPrequelsTitleText.text = model.nameRU
             Glide.with(itemView.context)
-                .load(model.infoImage)
+                .load(model.poster)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .transform(CenterCrop(), RoundedCorners(16))
-                .into(ivMovieDetailsEpisodesItemImage)
+                .into(ivMovieDetailsSequelsAndPrequelsItemImage)
+
+            itemView.setOnClickListener {
+                listener?.onClick(model.filmId)
+            }
         }
     }
 
     interface OnItemClickListener {
-        fun onClick(modelId: String)
+        fun onClick(modelId: Int)
     }
 }

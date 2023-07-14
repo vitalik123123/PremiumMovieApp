@@ -10,15 +10,15 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.premiummovieapp.R
-import com.example.premiummovieapp.data.model.MostPopularDataDetail
+import com.example.premiummovieapp.data.model.FilmTopResponseFilmsForList
 import com.example.premiummovieapp.databinding.HomeItemRecyclerBinding
 
 class HomeAdapter() : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
 
-    private var moviesList: List<MostPopularDataDetail> = emptyList()
+    private var moviesList: List<FilmTopResponseFilmsForList> = emptyList()
     private var listener: OnItemClickListener? = null
 
-    fun setData(_moviesList: List<MostPopularDataDetail>) {
+    fun setData(_moviesList: List<FilmTopResponseFilmsForList>) {
         moviesList = _moviesList
         notifyDataSetChanged()
     }
@@ -42,21 +42,25 @@ class HomeAdapter() : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: HomeItemRecyclerBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(model: MostPopularDataDetail) = with(binding) {
-            tvHomeItemRating.text = model.imdbRating
+        fun bind(model: FilmTopResponseFilmsForList) = with(binding) {
+            if (model.rating.last() != '%') {
+                tvHomeItemRating.text = model.rating
+            } else {
+                tvHomeItemRating.text = ""
+            }
             Glide.with(itemView.context)
-                .load(model.image)
+                .load(model.poster)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .transform(CenterCrop(), RoundedCorners(16))
                 .into(imHomeItemPoster)
 
             itemView.setOnClickListener {
-                listener?.onClick(model.id)
+                listener?.onClick(model.filmId)
             }
         }
     }
 
     interface OnItemClickListener {
-        fun onClick(modelId: String)
+        fun onClick(modelId: Int)
     }
 }

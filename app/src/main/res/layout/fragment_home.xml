@@ -42,16 +42,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivHomeNotification"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginEnd="20dp"
-                android:src="@drawable/ic_notification"
-                app:layout_constraintEnd_toEndOf="@id/ivHomeMainMovie"
-                app:layout_constraintTop_toTopOf="@id/ivHomeMainMovie" />
-
             <Button
                 android:id="@+id/btnHomePlay"
                 android:layout_width="wrap_content"
@@ -83,21 +73,6 @@
                 app:layout_constraintLeft_toRightOf="@id/btnHomePlay" />
 
             <TextView
-                android:id="@+id/tvHomeEarnMovie"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginBottom="6dp"
-                android:ellipsize="end"
-                android:maxWidth="200dp"
-                android:maxLines="1"
-                android:text="@string/sample_earnings_movie_home"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@id/btnHomePlay"
-                app:layout_constraintStart_toStartOf="@id/ivHomeMainMovie" />
-
-            <TextView
                 android:id="@+id/tvHomeTitleMovie"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -107,7 +82,7 @@
                 android:text="@string/sample_title_movie_home"
                 android:textColor="@color/white"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@id/tvHomeEarnMovie"
+                app:layout_constraintBottom_toTopOf="@id/btnHomePlay"
                 app:layout_constraintStart_toStartOf="@id/ivHomeMainMovie" />
 
             <TextView
@@ -150,12 +125,12 @@
                 android:text="@string/top_10_tvs"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@id/rvHomeTopTVs"
+                app:layout_constraintBottom_toTopOf="@id/rvHomeBestMovies"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/rvHomeTopMovies" />
 
             <TextView
-                android:id="@+id/tvSeeAllTopTVs"
+                android:id="@+id/tvSeeAllBestMovies"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:foreground="?android:attr/selectableItemBackground"
@@ -167,12 +142,44 @@
                 app:layout_constraintTop_toBottomOf="@id/rvHomeTopMovies" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvHomeTopTVs"
+                android:id="@+id/rvHomeBestMovies"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvSeeAllTopTVs" />
+                app:layout_constraintTop_toBottomOf="@id/tvSeeAllBestMovies" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="@string/top_10_await"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/rvHomeTopAwait"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rvHomeBestMovies" />
+
+            <TextView
+                android:id="@+id/tvSeeAllTopAwait"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:padding="15dp"
+                android:text="@string/see_all"
+                android:textColor="@color/red_main"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rvHomeBestMovies" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvHomeTopAwait"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvSeeAllTopAwait" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>

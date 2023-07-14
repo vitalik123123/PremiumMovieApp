@@ -1,10 +1,8 @@
 package com.example.premiummovieapp.presentation.details.moviedetails.ui
 
-import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.widget.Toast
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -15,8 +13,8 @@ import com.bumptech.glide.Glide
 import com.example.premiummovieapp.R
 import com.example.premiummovieapp.databinding.FragmentMovieDetailsBinding
 import com.example.premiummovieapp.presentation.details.moviedetails.presentation.MovieDetailsCastAdapter
-import com.example.premiummovieapp.presentation.details.moviedetails.presentation.MovieDetailsEpisodesAdapter
 import com.example.premiummovieapp.presentation.details.moviedetails.presentation.MovieDetailsMoreLikeThisAdapter
+import com.example.premiummovieapp.presentation.details.moviedetails.presentation.MovieDetailsSequelsAndPrequelsAdapter
 import com.example.premiummovieapp.presentation.details.moviedetails.presentation.MovieDetailsViewModel
 import com.example.premiummovieapp.presentation.lazyViewModel
 import com.example.premiummovieapp.presentation.main.connectivity.ConnectivityStatus
@@ -35,13 +33,13 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
     private val args: MovieDetailsFragmentArgs by navArgs()
     private val movieDetailsCastAdapter: MovieDetailsCastAdapter = MovieDetailsCastAdapter()
     private lateinit var movieDetailsCastLayoutManager: LinearLayoutManager
-    private val movieDetailsEpisodesAdapter: MovieDetailsEpisodesAdapter =
-        MovieDetailsEpisodesAdapter()
-    private lateinit var movieDetailsEpisodesLayoutManager: LinearLayoutManager
+    private val movieDetailsSequelsAndPrequelsAdapter: MovieDetailsSequelsAndPrequelsAdapter =
+        MovieDetailsSequelsAndPrequelsAdapter()
+    private lateinit var movieDetailsSequelsAndPrequelsLayoutManager: LinearLayoutManager
     private val movieDetailsMoreLikeThisAdapter: MovieDetailsMoreLikeThisAdapter =
         MovieDetailsMoreLikeThisAdapter()
     private lateinit var movieDetailsMoreLikeThisLayoutManager: LinearLayoutManager
-    private var currentSeason: String = "1"
+
     @Inject
     lateinit var connectivityStatus: ConnectivityStatus
 
@@ -60,17 +58,18 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
         connectivityStatus.observe(viewLifecycleOwner) { isConnected ->
             if (isConnected) {
                 initUi()
-            }else {
+            } else {
                 binding.layoutMainMovieDetailsFragment.visibility = View.GONE
                 binding.layoutErrorMovieDetailsFragment.visibility = View.VISIBLE
             }
         }
 
+        movieDetailsSequelsAndPrequelsAdapter.setOnClickListener(onClickSequelsAndPrequels)
+        movieDetailsMoreLikeThisAdapter.setOnClickListener(onClickMoreLikeThis)
+
         binding.backMovieDetails.setOnClickListener {
             findNavController().popBackStack()
         }
-
-        movieDetailsMoreLikeThisAdapter.setOnClickListener(onClickMoreLikeThis)
     }
 
     private fun initUi() {
@@ -79,6 +78,11 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
         movieDetailsCastLayoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.rvMovieDetailsCast.layoutManager = movieDetailsCastLayoutManager
+        binding.rvMovieDetailsSequelsAndPrequels.adapter = movieDetailsSequelsAndPrequelsAdapter
+        movieDetailsSequelsAndPrequelsLayoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.rvMovieDetailsSequelsAndPrequels.layoutManager =
+            movieDetailsSequelsAndPrequelsLayoutManager
         binding.rvMovieDetailsMoreLikeThis.adapter = movieDetailsMoreLikeThisAdapter
         movieDetailsMoreLikeThisLayoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -88,41 +92,25 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
 
         viewModel.state.onEach { state ->
             binding.apply {
-                if (state.typeMovie) {
-                    frameMovieDetailsTVsContent.visibility = View.GONE
+                tvMovieDetailsTitle.text = state.film.titleRu
+                tvMovieDetailsImdbRating.text = if (state.film.ratingKinopoisk != null) {
+                    state.film.ratingKinopoisk.toString()
                 } else {
-                    frameMovieDetailsTVsContent.visibility = View.VISIBLE
-                    tvMovieDetailsChooseSeason.text =
-                        resources.getString(R.string.choose_season_movie_details)
-                            .plus(" $currentSeason")
-                    binding.rvMovieDetailsEpisodes.adapter = movieDetailsEpisodesAdapter
-                    movieDetailsEpisodesLayoutManager =
-                        LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                    binding.rvMovieDetailsEpisodes.layoutManager = movieDetailsEpisodesLayoutManager
-                    movieDetailsEpisodesAdapter.setData(state.episodesList)
-                    tvMovieDetailsChooseSeason.setOnClickListener {
-                        showListSeasonAlert(state.seasonsList, state.content.id)
-                    }
+                    ""
                 }
-                tvMovieDetailsTitle.text = state.content.title
-
-                tvMovieDetailsImdbRating.text = state.content.imdbRating
-                tvMovieDetailsYear.text = state.content.year
-                tvMovieDetailsRuntime.text = state.content.runtime
-                tvMovieDetailsCompany.text = state.company
-
+                tvMovieDetailsYear.text = state.film.year.toString()
+                tvMovieDetailsRuntime.text = state.film.length.toString().plus("мин")
                 tvMovieDetailsGenres.text =
-                    resources.getString(R.string.sample_genres).plus(" ").plus(state.content.genres)
-
-                tvMovieDetailsDescription.text = state.content.description
+                    resources.getString(R.string.sample_genres).plus(" ").plus(state.genresString)
+                tvMovieDetailsDescription.text = state.film.description
 
                 Glide.with(this@MovieDetailsFragment)
-                    .load(state.content.image)
+                    .load(state.film.poster)
                     .centerCrop()
                     .into(ivMovieDetailsPoster)
 
                 ivMovieDetailsPoster.setOnClickListener {
-                    val list: List<String> = listOf(state.content.image)
+                    val list: List<String> = listOf(state.film.poster)
                     StfalconImageViewer.Builder(
                         context, list
                     ) { imageView, image ->
@@ -130,38 +118,39 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
                     }.show()
                 }
 
-                movieDetailsCastAdapter.setData(state.castList)
-                movieDetailsMoreLikeThisAdapter.setData(state.moreLikeThisList)
+                movieDetailsCastAdapter.setData(state.filmCastList)
+                if (state.filmSequelsAndPrequelsList?.isEmpty() == true) {
+                    binding.tvMovieDetailsSequelsAndPrequels.visibility = View.GONE
+                    binding.rvMovieDetailsSequelsAndPrequels.visibility = View.GONE
+                } else if (state.filmSequelsAndPrequelsList?.isNotEmpty() == true) {
+                    movieDetailsSequelsAndPrequelsAdapter.setData(state.filmSequelsAndPrequelsList)
+                }
+
+                if (state.filmSimilars?.isEmpty() == true) {
+                    binding.tvMovieDetailsMoreLikeThis.visibility = View.GONE
+                    binding.rvMovieDetailsMoreLikeThis.visibility = View.GONE
+                } else if (state.filmSimilars?.isNotEmpty() == true) {
+                    movieDetailsMoreLikeThisAdapter.setData(state.filmSimilars)
+                }
             }
         }.launchIn(lifecycleScope)
     }
 
-    private val onClickMoreLikeThis = object : MovieDetailsMoreLikeThisAdapter.OnItemClickListener {
-        override fun onClick(modelId: String) {
-            currentSeason = "1"
-            binding.rvMovieDetailsCast.scrollToPosition(0)
-            binding.rvMovieDetailsEpisodes.scrollToPosition(0)
-            binding.rvMovieDetailsMoreLikeThis.scrollToPosition(0)
-            viewModel.fetchApi(modelId)
+    private val onClickSequelsAndPrequels =
+        object : MovieDetailsSequelsAndPrequelsAdapter.OnItemClickListener {
+            override fun onClick(modelId: Int) {
+                viewNewData(modelId)
+            }
         }
 
+    private val onClickMoreLikeThis = object : MovieDetailsMoreLikeThisAdapter.OnItemClickListener {
+        override fun onClick(modelId: Int) {
+            viewNewData(modelId)
+        }
     }
 
-    private fun showListSeasonAlert(list: Array<String>, id: String) {
-        AlertDialog.Builder(this.context)
-            .setTitle(resources.getString(R.string.choose_season_movie_details_alert_dialog))
-            .setItems(list) { _, which ->
-                if (currentSeason != list[which]) {
-                    binding.tvMovieDetailsChooseSeason.text =
-                        resources.getString(R.string.choose_season_movie_details)
-                            .plus(" ${list[which]}")
-                    viewModel.getEpisodes(id = id, seasonNumber = list[which])
-                    currentSeason = list[which]
-                }
-            }
-            .setNegativeButton("Cancel") { _, _ ->
-                Toast.makeText(context, "Cancel", Toast.LENGTH_LONG).show()
-            }
-            .show()
+    private fun viewNewData(filmId: Int) {
+        findNavController().navigate(MovieDetailsFragmentDirections.actionMovieDetailsFragmentSelf(contentId = filmId))
+
     }
 }

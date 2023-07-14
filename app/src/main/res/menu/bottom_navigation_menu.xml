@@ -16,14 +16,9 @@
         android:title="My List"
         android:orderInCategory="3"/>
 
-    <item android:id="@id/tab_download"
-        android:icon="@drawable/download_selector"
-        android:title="Download"
-        android:orderInCategory="4"/>
-
     <item android:id="@id/tab_profile"
         android:icon="@drawable/profile_selector"
         android:title="Profile"
-        android:orderInCategory="5"/>
+        android:orderInCategory="4"/>
 
 </menu>

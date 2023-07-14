@@ -33,9 +33,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
     private val binding: FragmentHomeBinding by viewBinding()
     private var homeTopPopularMoviesAdapter: HomeAdapter = HomeAdapter()
-    private var homeTopPopularTVsAdapter: HomeAdapter = HomeAdapter()
+    private var homeTopBestMoviesAdapter: HomeAdapter = HomeAdapter()
+    private var homeTopAwaitMoviesAdapter: HomeAdapter = HomeAdapter()
     private lateinit var layoutManagerPopularMovies: RecyclerView.LayoutManager
-    private lateinit var layoutManagerPopularTVs: RecyclerView.LayoutManager
+    private lateinit var layoutManagerBestMovies: RecyclerView.LayoutManager
+    private lateinit var layoutManagerAwaitMovies: RecyclerView.LayoutManager
+
     @Inject
     lateinit var connectivityStatus: ConnectivityStatus
 
@@ -53,74 +56,77 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         connectivityStatus.observe(viewLifecycleOwner) { isConnected ->
             if (isConnected) {
                 initUi()
-            }else {
+            } else {
                 binding.layoutMainHomeFragment.visibility = View.GONE
                 binding.layoutErrorHomeFragment.visibility = View.VISIBLE
             }
         }
 
         binding.ivHomeMainMovie.setOnClickListener {
-            actionToMovieDetails(viewModel.state.value.leaderBoxOffice.id)
+            actionToMovieDetails(viewModel.state.value.leaderFilm.filmId)
         }
 
         binding.tvSeeAllTopMovies.setOnClickListener {
-            actionToFullPopularListFragment(FullPopularListFragment.MOST_POPULAR_MOVIES)
+            actionToFullPopularListFragment(FullPopularListFragment.OpenType.POPULAR_MOVIES)
         }
 
-        binding.tvSeeAllTopTVs.setOnClickListener {
-            actionToFullPopularListFragment(FullPopularListFragment.MOST_POPULAR_TVS)
+        binding.tvSeeAllBestMovies.setOnClickListener {
+            actionToFullPopularListFragment(FullPopularListFragment.OpenType.BEST_MOVIES)
         }
 
-        binding.ivHomeNotification.setOnClickListener {
-            actionToFullPopularListFragment(FullPopularListFragment.COMING_SOON)
+        binding.tvSeeAllTopAwait.setOnClickListener {
+            actionToFullPopularListFragment(FullPopularListFragment.OpenType.AWAIT_MOVIES)
         }
 
         homeTopPopularMoviesAdapter.setOnClickListener(onClick)
-        homeTopPopularTVsAdapter.setOnClickListener(onClick)
+        homeTopBestMoviesAdapter.setOnClickListener(onClick)
+        homeTopAwaitMoviesAdapter.setOnClickListener(onClick)
     }
 
     private fun initUi() {
         binding.rvHomeTopMovies.adapter = homeTopPopularMoviesAdapter
-        binding.rvHomeTopTVs.adapter = homeTopPopularTVsAdapter
+        binding.rvHomeBestMovies.adapter = homeTopBestMoviesAdapter
+        binding.rvHomeTopAwait.adapter = homeTopAwaitMoviesAdapter
         layoutManagerPopularMovies =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        layoutManagerPopularTVs =
+        layoutManagerBestMovies =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        layoutManagerAwaitMovies =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.rvHomeTopMovies.layoutManager = layoutManagerPopularMovies
-        binding.rvHomeTopTVs.layoutManager = layoutManagerPopularTVs
+        binding.rvHomeBestMovies.layoutManager = layoutManagerBestMovies
+        binding.rvHomeTopAwait.layoutManager = layoutManagerAwaitMovies
         binding.layoutMainHomeFragment.visibility = View.VISIBLE
         binding.layoutErrorHomeFragment.visibility = View.GONE
         viewModel.state.onEach { state ->
-                binding.tvHomeTitleMovie.text = state.leaderBoxOffice.title
-                binding.tvHomeEarnMovie.text =
-                    resources.getString(R.string.sample_earnings_movie_home).plus(" ")
-                        .plus(state.leaderBoxOffice.weekend)
-                Glide.with(this)
-                    .load(state.leaderBoxOffice.image)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .centerCrop()
-                    .into(binding.ivHomeMainMovie)
+            binding.tvHomeTitleMovie.text = state.leaderFilm.titleRu
+            Glide.with(this)
+                .load(state.leaderFilm.poster)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .centerCrop()
+                .into(binding.ivHomeMainMovie)
 
-                homeTopPopularMoviesAdapter.setData(state.top10PopularMovies)
-                homeTopPopularTVsAdapter.setData(state.top10PopularTVs)
+            homeTopPopularMoviesAdapter.setData(state.top10PopularMovies)
+            homeTopBestMoviesAdapter.setData(state.top10BestMovies)
+            homeTopAwaitMoviesAdapter.setData(state.top10AwaitMovies)
         }.launchIn(lifecycleScope)
     }
 
     private val onClick = object : HomeAdapter.OnItemClickListener {
-        override fun onClick(modelId: String) {
+        override fun onClick(modelId: Int) {
             actionToMovieDetails(modelId)
         }
     }
 
-    private fun actionToMovieDetails(id: String) {
+    private fun actionToMovieDetails(id: Int) {
         findTopNavController().navigate(
             BottomNavigationViewDirections.actionBottomNavigationViewToMovieDetailsFragment(
-                id
+                contentId = id
             )
         )
     }
 
-    private fun actionToFullPopularListFragment(type: String) {
+    private fun actionToFullPopularListFragment(type: FullPopularListFragment.OpenType) {
         findNavController().navigate(
             HomeFragmentDirections.actionHomeFragmentToFullPopularListFragment(
                 openType = type

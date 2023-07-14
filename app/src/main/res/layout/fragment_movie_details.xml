@@ -61,7 +61,7 @@
                 android:layout_marginTop="10dp"
                 android:ellipsize="end"
                 android:maxWidth="300dp"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:text="@string/sample_title_movie_home"
                 android:textColor="@color/black"
                 android:textSize="26sp"
@@ -140,23 +140,7 @@
                 android:text="@string/sample_runtime"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@id/tvMovieDetailsCompany"
                 app:layout_constraintStart_toEndOf="@id/tvMovieDetailsYear"
-                app:layout_constraintTop_toBottomOf="@id/tvMovieDetailsTitle" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvMovieDetailsCompany"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:ellipsize="end"
-                android:maxWidth="160dp"
-                android:maxLines="1"
-                android:text="@string/sample_company"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@id/tvMovieDetailsRuntime"
                 app:layout_constraintTop_toBottomOf="@id/tvMovieDetailsTitle" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -180,7 +164,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="10dp"
-                android:maxLines="3"
+                android:maxLines="5"
                 android:text="@string/sample_description"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -206,37 +190,24 @@
                 app:layout_constraintTop_toBottomOf="@id/rvMovieDetailsCast">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvMovieDetailsEpisodesInChooseSeason"
+                    android:id="@+id/tvMovieDetailsSequelsAndPrequels"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/episodes_movie_details"
+                    android:text="@string/sequels_and_prequels_movie_details"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvMovieDetailsChooseSeason"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableEnd="@drawable/ic_arrow_down"
-                    android:drawableTint="@color/red_main"
-                    android:gravity="center"
-                    android:text="@string/choose_season_movie_details"
-                    android:textColor="@color/red_main"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvMovieDetailsEpisodes"
+                    android:id="@+id/rvMovieDetailsSequelsAndPrequels"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvMovieDetailsEpisodesInChooseSeason" />
+                    app:layout_constraintTop_toBottomOf="@id/tvMovieDetailsSequelsAndPrequels" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatTextView

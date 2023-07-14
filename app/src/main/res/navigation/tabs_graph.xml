@@ -7,6 +7,5 @@
     <include app:graph="@navigation/tab_home" />
     <include app:graph="@navigation/tab_search" />
     <include app:graph="@navigation/tab_list" />
-    <include app:graph="@navigation/tab_download" />
     <include app:graph="@navigation/tab_profile" />
 </navigation>

@@ -1,22 +1,21 @@
 package com.example.premiummovieapp.data.repositories.remote
 
-import com.example.premiummovieapp.data.model.BoxOfficeWeekendData
-import com.example.premiummovieapp.data.model.MostPopularData
-import com.example.premiummovieapp.data.model.NewMovieData
-import com.example.premiummovieapp.data.model.SeasonEpisodesData
-import com.example.premiummovieapp.data.model.TitleData
+import com.example.premiummovieapp.data.model.details.FilmCast
+import com.example.premiummovieapp.data.model.details.FilmDataDetails
+import com.example.premiummovieapp.data.model.FilmTopResponseData
+import com.example.premiummovieapp.data.model.details.FilmSequelsAndPrequels
+import com.example.premiummovieapp.data.model.details.FilmSimilarsResponseData
+import retrofit2.Response
 
 interface MovieRemoteDataSource {
 
-    suspend fun getBoxOffice(): BoxOfficeWeekendData
+    suspend fun getTopFilms(type: String, page: Int): Response<FilmTopResponseData>
 
-    suspend fun getMostPopularMovies(): MostPopularData
+    suspend fun getFilmDataDetails(id: Int): Response<FilmDataDetails>
 
-    suspend fun getMostPopularTVs(): MostPopularData
+    suspend fun getFilmCast(filmId: Int): Response<List<FilmCast>>
 
-    suspend fun getComingSoon(): NewMovieData
+    suspend fun getFilmSequelsAndPrequels(id: Int): Response<List<FilmSequelsAndPrequels>>
 
-    suspend fun getMoviesDetails(id: String): TitleData
-
-    suspend fun getSeasonEpisodes(id: String, seasonNumber: String): SeasonEpisodesData
+    suspend fun getFilmSimilars(id: Int): Response<FilmSimilarsResponseData>
 }

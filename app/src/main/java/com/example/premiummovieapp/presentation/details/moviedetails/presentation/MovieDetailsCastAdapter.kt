@@ -5,15 +5,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.example.premiummovieapp.data.model.CastList
+import com.example.premiummovieapp.data.model.details.FilmCast
 import com.example.premiummovieapp.databinding.MoviesDetailsCastItemRecyclerBinding
 
 class MovieDetailsCastAdapter() : RecyclerView.Adapter<MovieDetailsCastAdapter.ViewHolder>() {
 
-    private var castList: List<CastList> = emptyList()
+    private var castList: List<FilmCast> = emptyList()
     private var listener: OnItemClickListener? = null
 
-    fun setData(_castList: List<CastList>) {
+    fun setData(_castList: List<FilmCast>) {
         castList = _castList
         notifyDataSetChanged()
     }
@@ -40,11 +40,11 @@ class MovieDetailsCastAdapter() : RecyclerView.Adapter<MovieDetailsCastAdapter.V
     inner class ViewHolder(private val binding: MoviesDetailsCastItemRecyclerBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(model: CastList) = with(binding) {
-            tvMovieDetailsCastItemName.text = model.castName
-            tvMovieDetailsCastItemCharacter.text = model.castAsCharacter
+        fun bind(model: FilmCast) = with(binding) {
+            tvMovieDetailsCastItemName.text = model.nameRu
+            tvMovieDetailsCastItemCharacter.text = model.descriptionRole
             Glide.with(itemView.context)
-                .load(model.castImage)
+                .load(model.posterCast)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .circleCrop()
                 .into(ivMovieDetailsCastItemImage)

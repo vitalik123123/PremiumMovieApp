@@ -1,26 +1,20 @@
 package com.example.premiummovieapp.data.repositories
 
-import com.example.premiummovieapp.data.model.BoxOfficeWeekendDataDetail
-import com.example.premiummovieapp.data.model.MostPopularDataDetail
-import com.example.premiummovieapp.data.model.NewMovieDataDetail
-import com.example.premiummovieapp.data.model.SeasonEpisodesData
-import com.example.premiummovieapp.data.model.TitleData
+import com.example.premiummovieapp.data.model.details.FilmCast
+import com.example.premiummovieapp.data.model.details.FilmDataDetails
+import com.example.premiummovieapp.data.model.FilmTopResponseData
+import com.example.premiummovieapp.data.model.details.FilmSequelsAndPrequels
+import com.example.premiummovieapp.data.model.details.FilmSimilarsResponseData
 
 interface MovieRepository {
 
-    suspend fun getLeaderBoxOffice(): BoxOfficeWeekendDataDetail
+    suspend fun getTopFilms(type: String, page: Int): FilmTopResponseData?
 
-    suspend fun getTop10PopularMovies(): List<MostPopularDataDetail>
+    suspend fun getFilmDataDetails(id: Int): FilmDataDetails?
 
-    suspend fun getTop10PopularTVs(): List<MostPopularDataDetail>
+    suspend fun getFilmCast(filmId: Int): List<FilmCast>?
 
-    suspend fun getMostPopularMovies(): List<MostPopularDataDetail>
+    suspend fun getFilmSequelsAndPrequels(id: Int): List<FilmSequelsAndPrequels>?
 
-    suspend fun getMostPopularTVs(): List<MostPopularDataDetail>
-
-    suspend fun getComingSoon(): List<NewMovieDataDetail>
-
-    suspend fun getMoviesDetails(id: String): TitleData
-
-    suspend fun getSeasonEpisodes(id: String, seasonNumber: String): SeasonEpisodesData
+    suspend fun getFilmSimilars(id: Int): FilmSimilarsResponseData?
 }

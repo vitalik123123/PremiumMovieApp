@@ -20,7 +20,9 @@ class ConnectivityStatus(context: Context) : LiveData<Boolean>() {
 
         override fun onLost(network: Network) {
             super.onLost(network)
-            postValue(false)
+            if (connectivityManager.activeNetwork == null) {
+                postValue(false)
+            }
         }
 
         override fun onLosing(network: Network, maxMsToLive: Int) {

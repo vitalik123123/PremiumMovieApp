@@ -21,6 +21,6 @@
         tools:layout="@layout/fragment_full_popular_list" >
         <argument
             android:name="openType"
-            app:argType="string" />
+            app:argType="com.example.premiummovieapp.presentation.home.fullpopularlist.ui.FullPopularListFragment$OpenType" />
     </fragment>
 </navigation>

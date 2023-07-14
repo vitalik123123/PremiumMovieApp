@@ -21,6 +21,9 @@
         tools:layout="@layout/fragment_movie_details">
         <argument
             android:name="contentId"
-            app:argType="string" />
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_self"
+            app:destination="@id/movieDetailsFragment" />
     </fragment>
 </navigation>

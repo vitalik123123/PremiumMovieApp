@@ -3,8 +3,8 @@ package com.example.premiummovieapp.presentation.home.home.presentation
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.premiummovieapp.data.model.BoxOfficeWeekendDataDetail
-import com.example.premiummovieapp.data.model.MostPopularDataDetail
+import com.example.premiummovieapp.data.api.MovieApi
+import com.example.premiummovieapp.data.model.FilmTopResponseFilmsForList
 import com.example.premiummovieapp.data.repositories.MovieRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -28,9 +28,22 @@ class HomeViewModel @AssistedInject constructor(
         viewModelScope.launch {
             state.update { ui ->
                 ui.copy(
-                    leaderBoxOffice = movieRepository.getLeaderBoxOffice(),
-                    top10PopularMovies = movieRepository.getTop10PopularMovies(),
-                    top10PopularTVs = movieRepository.getTop10PopularTVs()
+                    leaderFilm = movieRepository.getTopFilms(
+                        type = MovieApi.TOP_POPULAR,
+                        page = 1
+                    )!!.films.first(),
+                    top10PopularMovies = movieRepository.getTopFilms(
+                        type = MovieApi.TOP_POPULAR,
+                        page = 1
+                    )!!.films.take(10),
+                    top10BestMovies = movieRepository.getTopFilms(
+                        type = MovieApi.TOP_BEST,
+                        page = 1
+                    )!!.films.take(10),
+                    top10AwaitMovies = movieRepository.getTopFilms(
+                        type = MovieApi.TOP_AWAIT,
+                        page = 1
+                    )!!.films.take(10)
                 )
             }
         }
@@ -42,8 +55,9 @@ class HomeViewModel @AssistedInject constructor(
     }
 
     data class MyState(
-        val leaderBoxOffice: BoxOfficeWeekendDataDetail = BoxOfficeWeekendDataDetail(),
-        val top10PopularMovies: List<MostPopularDataDetail> = emptyList(),
-        val top10PopularTVs: List<MostPopularDataDetail> = emptyList()
+        val leaderFilm: FilmTopResponseFilmsForList = FilmTopResponseFilmsForList(),
+        val top10PopularMovies: List<FilmTopResponseFilmsForList> = emptyList(),
+        val top10BestMovies: List<FilmTopResponseFilmsForList> = emptyList(),
+        val top10AwaitMovies: List<FilmTopResponseFilmsForList> = emptyList()
     )
 }
