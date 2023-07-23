@@ -10,6 +10,7 @@ import com.example.premiummovieapp.presentation.home.fullpopularlist.ui.FullPopu
 import com.example.premiummovieapp.presentation.home.home.presentation.HomeViewModel
 import com.example.premiummovieapp.presentation.home.home.ui.HomeFragment
 import com.example.premiummovieapp.presentation.main.MainActivity
+import com.example.premiummovieapp.presentation.search.presentation.SearchViewModel
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -24,6 +25,7 @@ interface AppComponent {
     fun injectHomeViewModel(): HomeViewModel.Factory
     fun injectFullPopularListViewModel(): FullPopularListViewModel.Factory
     fun injectMovieDetailsViewModel(): MovieDetailsViewModel.Factory
+    fun injectSearchViewModel(): SearchViewModel.Factory
 
     @Component.Factory
     interface Factory {

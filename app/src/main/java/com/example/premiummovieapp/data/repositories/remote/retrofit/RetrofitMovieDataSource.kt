@@ -1,6 +1,7 @@
 package com.example.premiummovieapp.data.repositories.remote.retrofit
 
 import com.example.premiummovieapp.data.api.MovieApi
+import com.example.premiummovieapp.data.model.FilmResponseSearchByKeyword
 import com.example.premiummovieapp.data.model.details.FilmCast
 import com.example.premiummovieapp.data.model.details.FilmDataDetails
 import com.example.premiummovieapp.data.model.details.FilmSequelsAndPrequels
@@ -24,4 +25,10 @@ class RetrofitMovieDataSource(private val movieApi: MovieApi) : MovieRemoteDataS
 
     override suspend fun getFilmSimilars(id: Int): Response<FilmSimilarsResponseData> =
         movieApi.getFilmSimilars(id = id)
+
+    override suspend fun getFilmsSearchByKeyword(
+        keyword: String,
+        page: Int
+    ): Response<FilmResponseSearchByKeyword> =
+        movieApi.getFilmsSearchByKeyword(keyword = keyword, page = page)
 }

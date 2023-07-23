@@ -1,5 +1,6 @@
 package com.example.premiummovieapp.data.api
 
+import com.example.premiummovieapp.data.model.FilmResponseSearchByKeyword
 import com.example.premiummovieapp.data.model.details.FilmCast
 import com.example.premiummovieapp.data.model.details.FilmDataDetails
 import com.example.premiummovieapp.data.model.FilmTopResponseData
@@ -44,9 +45,17 @@ interface MovieApi {
         @Path("id") id: Int
     ): Response<FilmSimilarsResponseData>
 
+    @GET("api/v2.1/films/search-by-keyword")
+    @Headers(HEADERS)
+    suspend fun getFilmsSearchByKeyword(
+        @Query("keyword") keyword: String,
+        @Query("page") page: Int
+    ): Response<FilmResponseSearchByKeyword>
+
     companion object {
         const val BASE_URL = "https://kinopoiskapiunofficial.tech/"
-        const val HEADERS = "X-API-KEY: e30ffed0-76ab-4dd6-b41f-4c9da2b2735b" // 03ef47cc-dde2-4fda-acae-7f4e0865cfef
+        const val HEADERS =
+            "X-API-KEY: e30ffed0-76ab-4dd6-b41f-4c9da2b2735b" // 03ef47cc-dde2-4fda-acae-7f4e0865cfef
         const val TOP_BEST = "TOP_250_BEST_FILMS"
         const val TOP_POPULAR = "TOP_100_POPULAR_FILMS"
         const val TOP_AWAIT = "TOP_AWAIT_FILMS"

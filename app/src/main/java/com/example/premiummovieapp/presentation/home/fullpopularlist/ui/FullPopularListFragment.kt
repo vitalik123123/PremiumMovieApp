@@ -33,7 +33,6 @@ class FullPopularListFragment : Fragment(R.layout.fragment_full_popular_list) {
     private val binding: FragmentFullPopularListBinding by viewBinding()
     private val args: FullPopularListFragmentArgs by navArgs()
     private lateinit var layoutManagerFullPopular: RecyclerView.LayoutManager
-
     @Inject
     lateinit var connectivityStatus: ConnectivityStatus
     private val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {

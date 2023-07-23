@@ -1,5 +1,6 @@
 package com.example.premiummovieapp.data.repositories.remote
 
+import com.example.premiummovieapp.data.model.FilmResponseSearchByKeyword
 import com.example.premiummovieapp.data.model.details.FilmCast
 import com.example.premiummovieapp.data.model.details.FilmDataDetails
 import com.example.premiummovieapp.data.model.FilmTopResponseData
@@ -18,4 +19,9 @@ interface MovieRemoteDataSource {
     suspend fun getFilmSequelsAndPrequels(id: Int): Response<List<FilmSequelsAndPrequels>>
 
     suspend fun getFilmSimilars(id: Int): Response<FilmSimilarsResponseData>
+
+    suspend fun getFilmsSearchByKeyword(
+        keyword: String,
+        page: Int
+    ): Response<FilmResponseSearchByKeyword>
 }

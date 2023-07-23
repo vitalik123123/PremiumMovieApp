@@ -1,4 +1,4 @@
-package com.example.premiummovieapp.presentation.home.fullpopularlist.presentation
+package com.example.premiummovieapp.presentation.search.presentation
 
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +12,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.premiummovieapp.R
-import com.example.premiummovieapp.data.model.FilmTopResponseFilmsForList
+import com.example.premiummovieapp.data.model.FilmsListSearchByKeyword
 import com.example.premiummovieapp.databinding.FullPopularListItemRecyclerBinding
 
-class FullPopularListPagingAdapter :
-    PagingDataAdapter<FilmTopResponseFilmsForList, FullPopularListPagingAdapter.ViewHolder>(
+class SearchPagingAdapter :
+    PagingDataAdapter<FilmsListSearchByKeyword, SearchPagingAdapter.ViewHolder>(
         DataDiffer
     ) {
 
@@ -28,13 +28,9 @@ class FullPopularListPagingAdapter :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position))
-
     }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.full_popular_list_item_recycler, parent, false)
@@ -44,13 +40,20 @@ class FullPopularListPagingAdapter :
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val viewBinding by viewBinding(FullPopularListItemRecyclerBinding::bind)
 
-        fun bind(model: FilmTopResponseFilmsForList?) = with(viewBinding) {
-            if (model?.rating?.last() != '%') {
+        fun bind(model: FilmsListSearchByKeyword?) = with(viewBinding) {
+            if (model?.rating?.last() != '%' && model?.rating != "null") {
                 tvRatingItemFullPopular.text = model?.rating
+            } else if (model.rating == "null") {
+                tvRatingItemFullPopular.text = ""
             } else {
                 tvRatingItemFullPopular.text = ""
             }
-            tvRankAndTitleItemFullPopular.text = model?.titleRu
+
+            if (model?.titleRu != "ТитлеРу") {
+                tvRankAndTitleItemFullPopular.text = model?.titleRu
+            } else {
+                tvRankAndTitleItemFullPopular.text = model.titleEn
+            }
             Glide.with(itemView.context)
                 .load(model?.poster)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -63,17 +66,17 @@ class FullPopularListPagingAdapter :
         }
     }
 
-    object DataDiffer : DiffUtil.ItemCallback<FilmTopResponseFilmsForList>() {
+    object DataDiffer : DiffUtil.ItemCallback<FilmsListSearchByKeyword>() {
         override fun areItemsTheSame(
-            oldItem: FilmTopResponseFilmsForList,
-            newItem: FilmTopResponseFilmsForList
+            oldItem: FilmsListSearchByKeyword,
+            newItem: FilmsListSearchByKeyword
         ): Boolean {
             return oldItem.filmId == newItem.filmId
         }
 
         override fun areContentsTheSame(
-            oldItem: FilmTopResponseFilmsForList,
-            newItem: FilmTopResponseFilmsForList
+            oldItem: FilmsListSearchByKeyword,
+            newItem: FilmsListSearchByKeyword
         ): Boolean {
             return oldItem == newItem
         }

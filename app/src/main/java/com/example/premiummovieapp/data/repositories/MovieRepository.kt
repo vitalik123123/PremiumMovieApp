@@ -1,5 +1,6 @@
 package com.example.premiummovieapp.data.repositories
 
+import com.example.premiummovieapp.data.model.FilmResponseSearchByKeyword
 import com.example.premiummovieapp.data.model.details.FilmCast
 import com.example.premiummovieapp.data.model.details.FilmDataDetails
 import com.example.premiummovieapp.data.model.FilmTopResponseData
@@ -17,4 +18,6 @@ interface MovieRepository {
     suspend fun getFilmSequelsAndPrequels(id: Int): List<FilmSequelsAndPrequels>?
 
     suspend fun getFilmSimilars(id: Int): FilmSimilarsResponseData?
+
+    suspend fun getFilmsSearchByKeyword(keyword: String, page: Int): FilmResponseSearchByKeyword?
 }
