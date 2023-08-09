@@ -26,7 +26,6 @@ class MovieDetailsViewModel @AssistedInject constructor(
     fun fetchApi(id: Int) {
         viewModelScope.launch {
             state.update { ui ->
-
                 movieRepository.getFilmDataDetails(id).let { content ->
                     ui.copy(
                         film = content!!,
@@ -41,6 +40,28 @@ class MovieDetailsViewModel @AssistedInject constructor(
         }
     }
 
+    fun exists(kinopoiskId: Int) {
+        viewModelScope.launch {
+            state.update { ui ->
+                ui.copy(
+                    existsMovieToWatchlist = movieRepository.existsMovieToWatchList(kinopoiskId = kinopoiskId)
+                )
+            }
+        }
+    }
+
+    fun saveMovieToWatchlist(film: FilmDataDetails) {
+        viewModelScope.launch {
+            movieRepository.saveMovieToWatchList(film = film)
+        }
+    }
+
+    fun deleteMovieFromWatchlist(kinopoiskId: Int) {
+        viewModelScope.launch {
+            movieRepository.deleteMovieFromWatchlist(kinopoiskId = kinopoiskId)
+        }
+    }
+
     @AssistedFactory
     interface Factory {
         fun create(savedStateHandle: SavedStateHandle): MovieDetailsViewModel
@@ -51,6 +72,7 @@ class MovieDetailsViewModel @AssistedInject constructor(
         val genresString: String = "",
         val filmCastList: List<FilmCast> = emptyList(),
         val filmSequelsAndPrequelsList: List<FilmSequelsAndPrequels>? = null,
-        val filmSimilars: List<FilmSimilars>? = null
+        val filmSimilars: List<FilmSimilars>? = null,
+        val existsMovieToWatchlist: Boolean = false
     )
 }

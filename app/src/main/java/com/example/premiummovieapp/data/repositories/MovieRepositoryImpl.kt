@@ -6,9 +6,14 @@ import com.example.premiummovieapp.data.model.details.FilmDataDetails
 import com.example.premiummovieapp.data.model.FilmTopResponseData
 import com.example.premiummovieapp.data.model.details.FilmSequelsAndPrequels
 import com.example.premiummovieapp.data.model.details.FilmSimilarsResponseData
+import com.example.premiummovieapp.data.repositories.local.MovieLocalDataSource
+import com.example.premiummovieapp.data.repositories.local.room.dao.watchlist.WatchlistEntity
 import com.example.premiummovieapp.data.repositories.remote.MovieRemoteDataSource
 
-class MovieRepositoryImpl(private val movieRemoteDataSource: MovieRemoteDataSource) :
+class MovieRepositoryImpl(
+    private val movieRemoteDataSource: MovieRemoteDataSource,
+    private val movieLocalDataSource: MovieLocalDataSource
+) :
     MovieRepository {
 
     override suspend fun getTopFilms(type: String, page: Int): FilmTopResponseData? =
@@ -48,4 +53,16 @@ class MovieRepositoryImpl(private val movieRemoteDataSource: MovieRemoteDataSour
             FilmResponseSearchByKeyword()
         }
     }
+
+    override suspend fun getAllLocalWatchlist(): List<WatchlistEntity> =
+        movieLocalDataSource.getAllLocalWatchlist()
+
+    override suspend fun saveMovieToWatchList(film: FilmDataDetails) =
+        movieLocalDataSource.saveMovieToWatchlist(film = film)
+
+    override suspend fun deleteMovieFromWatchlist(kinopoiskId: Int) =
+        movieLocalDataSource.deleteMovieFromWatchlist(kinopoiskId = kinopoiskId)
+
+    override suspend fun existsMovieToWatchList(kinopoiskId: Int): Boolean =
+        movieLocalDataSource.existsMovieToWatchlist(kinopoiskId = kinopoiskId)
 }

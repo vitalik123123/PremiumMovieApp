@@ -3,6 +3,7 @@ package com.example.premiummovieapp.presentation.details.moviedetails.ui
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -74,6 +75,7 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
 
     private fun initUi() {
         viewModel.fetchApi(args.contentId)
+        viewModel.exists(args.contentId)
         binding.rvMovieDetailsCast.adapter = movieDetailsCastAdapter
         movieDetailsCastLayoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -118,6 +120,16 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
                     }.show()
                 }
 
+                ivMovieDetailsAddList.setOnClickListener {
+                    if (state.existsMovieToWatchlist) {
+                        viewModel.deleteMovieFromWatchlist(args.contentId)
+                        viewModel.exists(args.contentId)
+                    } else {
+                        viewModel.saveMovieToWatchlist(state.film)
+                        viewModel.exists(args.contentId)
+                    }
+                }
+
                 movieDetailsCastAdapter.setData(state.filmCastList)
                 if (state.filmSequelsAndPrequelsList?.isEmpty() == true) {
                     binding.tvMovieDetailsSequelsAndPrequels.visibility = View.GONE
@@ -131,6 +143,20 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
                     binding.rvMovieDetailsMoreLikeThis.visibility = View.GONE
                 } else if (state.filmSimilars?.isNotEmpty() == true) {
                     movieDetailsMoreLikeThisAdapter.setData(state.filmSimilars)
+                }
+
+                if (state.existsMovieToWatchlist) {
+                    ivMovieDetailsAddList.setImageDrawable(context?.let {
+                        AppCompatResources.getDrawable(
+                            it, R.drawable.ic_list_selected
+                        )
+                    })
+                } else {
+                    ivMovieDetailsAddList.setImageDrawable((context?.let {
+                        AppCompatResources.getDrawable(
+                            it, R.drawable.ic_list_unselected
+                        )
+                    }))
                 }
             }
         }.launchIn(lifecycleScope)
@@ -150,7 +176,11 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
     }
 
     private fun viewNewData(filmId: Int) {
-        findNavController().navigate(MovieDetailsFragmentDirections.actionMovieDetailsFragmentSelf(contentId = filmId))
+        findNavController().navigate(
+            MovieDetailsFragmentDirections.actionMovieDetailsFragmentSelf(
+                contentId = filmId
+            )
+        )
 
     }
 }

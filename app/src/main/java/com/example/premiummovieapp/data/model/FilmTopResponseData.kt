@@ -20,7 +20,7 @@ data class FilmTopResponseFilmsForList(
     val titleRu: String = "ТитлеРу",
 
     @SerializedName("rating")
-    val rating: String = "9.0",
+    val rating: String? = "9.0",
 
     @SerializedName("posterUrl")
     val poster: String = "url"

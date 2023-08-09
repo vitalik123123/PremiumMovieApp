@@ -7,7 +7,20 @@
 
     <fragment
         android:id="@+id/listFragment"
-        android:name="com.example.premiummovieapp.presentation.list.ui.ListFragment"
+        android:name="com.example.premiummovieapp.presentation.list.list.ui.ListFragment"
         android:label="fragment_list"
-        tools:layout="@layout/fragment_list" />
+        tools:layout="@layout/fragment_list" >
+        <action
+            android:id="@+id/action_listFragment_to_listFullListFragment"
+            app:destination="@id/listFullListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/listFullListFragment"
+        android:name="com.example.premiummovieapp.presentation.list.fulllist.ui.ListFullListFragment"
+        android:label="fragment_list_full_list"
+        tools:layout="@layout/fragment_list_full_list" >
+        <argument
+            android:name="listType"
+            app:argType="com.example.premiummovieapp.presentation.list.fulllist.ui.ListFullListFragment$ListType" />
+    </fragment>
 </navigation>

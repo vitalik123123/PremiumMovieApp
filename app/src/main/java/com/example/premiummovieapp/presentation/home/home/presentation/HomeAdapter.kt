@@ -13,7 +13,7 @@ import com.example.premiummovieapp.R
 import com.example.premiummovieapp.data.model.FilmTopResponseFilmsForList
 import com.example.premiummovieapp.databinding.HomeItemRecyclerBinding
 
-class HomeAdapter() : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
+class HomeAdapter : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
 
     private var moviesList: List<FilmTopResponseFilmsForList> = emptyList()
     private var listener: OnItemClickListener? = null
@@ -43,7 +43,7 @@ class HomeAdapter() : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(model: FilmTopResponseFilmsForList) = with(binding) {
-            if (model.rating.last() != '%') {
+            if (model.rating?.last() != '%') {
                 tvHomeItemRating.text = model.rating
             } else {
                 tvHomeItemRating.text = ""

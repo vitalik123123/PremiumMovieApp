@@ -32,13 +32,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         getAppComponent().injectHomeViewModel().create(stateHandel)
     }
     private val binding: FragmentHomeBinding by viewBinding()
-    private var homeTopPopularMoviesAdapter: HomeAdapter = HomeAdapter()
-    private var homeTopBestMoviesAdapter: HomeAdapter = HomeAdapter()
-    private var homeTopAwaitMoviesAdapter: HomeAdapter = HomeAdapter()
+    private val homeTopPopularMoviesAdapter: HomeAdapter = HomeAdapter()
+    private val homeTopBestMoviesAdapter: HomeAdapter = HomeAdapter()
+    private val homeTopAwaitMoviesAdapter: HomeAdapter = HomeAdapter()
     private lateinit var layoutManagerPopularMovies: RecyclerView.LayoutManager
     private lateinit var layoutManagerBestMovies: RecyclerView.LayoutManager
     private lateinit var layoutManagerAwaitMovies: RecyclerView.LayoutManager
-
     @Inject
     lateinit var connectivityStatus: ConnectivityStatus
 
