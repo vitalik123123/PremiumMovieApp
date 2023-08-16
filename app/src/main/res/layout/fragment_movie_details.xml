@@ -96,7 +96,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:drawableStart="@drawable/ic_star"
-                android:drawableTint="@color/imdb_yellow"
+                android:drawableTint="@color/kinopoisk_orange"
                 android:text="@string/sample_rating"
                 android:textSize="18sp"
                 android:textStyle="bold"

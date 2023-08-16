@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.premiummovieapp.data.repositories.MovieRepository
+import com.example.premiummovieapp.data.repositories.local.room.dao.ratinglist.RatingEntity
 import com.example.premiummovieapp.data.repositories.local.room.dao.watchlist.WatchlistEntity
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -34,6 +35,16 @@ class ListFullListViewModel @AssistedInject constructor(
         }
     }
 
+    fun getLocalFullRatinglist() {
+        viewModelScope.launch {
+            state.update { ui ->
+                ui.copy(
+                    fullRatinglist = movieRepository.getAllLocalRatinglist().reversed()
+                )
+            }
+        }
+    }
+
     fun deleteMovieFromWatchlist(kinopoiskId: Int) {
         viewModelScope.launch {
             movieRepository.deleteMovieFromWatchlist(kinopoiskId = kinopoiskId)
@@ -41,6 +52,7 @@ class ListFullListViewModel @AssistedInject constructor(
     }
 
     data class MyState(
-        val fullWatchlist: List<WatchlistEntity> = emptyList()
+        val fullWatchlist: List<WatchlistEntity> = emptyList(),
+        val fullRatinglist: List<RatingEntity> = emptyList()
     )
 }

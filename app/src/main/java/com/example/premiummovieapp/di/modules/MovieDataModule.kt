@@ -23,7 +23,7 @@ class MovieDataModule {
     @Provides
     @Singleton
     fun provideLocalDataSource(roomDatabase: PremiumMovieRoomDatabase): MovieLocalDataSource =
-        RoomMovieDataSource(roomDatabase.watchlistDao())
+        RoomMovieDataSource(roomDatabase.watchlistDao(), roomDatabase.ratinglistDao())
 
     @Provides
     @Singleton

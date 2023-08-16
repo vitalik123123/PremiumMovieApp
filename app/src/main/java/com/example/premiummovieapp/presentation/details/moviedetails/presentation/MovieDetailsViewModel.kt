@@ -44,7 +44,8 @@ class MovieDetailsViewModel @AssistedInject constructor(
         viewModelScope.launch {
             state.update { ui ->
                 ui.copy(
-                    existsMovieToWatchlist = movieRepository.existsMovieToWatchList(kinopoiskId = kinopoiskId)
+                    existsMovieToWatchlist = movieRepository.existsMovieToWatchList(kinopoiskId = kinopoiskId),
+                    existsMovieToRatinglist = movieRepository.existsMyRatingToRatinglist(kinopoiskId = kinopoiskId)
                 )
             }
         }
@@ -62,6 +63,34 @@ class MovieDetailsViewModel @AssistedInject constructor(
         }
     }
 
+    fun saveMyRatingToRatingList(film: FilmDataDetails, myRating: Int) {
+        viewModelScope.launch {
+            movieRepository.saveMyRatingToRatinglist(film = film, myRating = myRating)
+        }
+    }
+
+    fun deleteMyRatingFromRatinglist(kinopoiskId: Int){
+        viewModelScope.launch {
+            movieRepository.deleteMyRatingFromRatinglist(kinopoiskId = kinopoiskId)
+        }
+    }
+
+    fun updateMyRatingToRatinglist(kinopoiskId: Int, myRating: Int) {
+        viewModelScope.launch {
+            movieRepository.updateMyRatingFromRatinglist(kinopoiskId = kinopoiskId, myRating = myRating)
+        }
+    }
+
+    fun getMyRating(kinopoiskId: Int) {
+        viewModelScope.launch {
+            state.update { ui ->
+                ui.copy(
+                    myRating = movieRepository.getMyRatingFromRatinglistToDetails(kinopoiskId = kinopoiskId)
+                )
+            }
+        }
+    }
+
     @AssistedFactory
     interface Factory {
         fun create(savedStateHandle: SavedStateHandle): MovieDetailsViewModel
@@ -73,6 +102,8 @@ class MovieDetailsViewModel @AssistedInject constructor(
         val filmCastList: List<FilmCast> = emptyList(),
         val filmSequelsAndPrequelsList: List<FilmSequelsAndPrequels>? = null,
         val filmSimilars: List<FilmSimilars>? = null,
-        val existsMovieToWatchlist: Boolean = false
+        val existsMovieToWatchlist: Boolean = false,
+        val existsMovieToRatinglist: Boolean = false,
+        val myRating: Int = 0
     )
 }

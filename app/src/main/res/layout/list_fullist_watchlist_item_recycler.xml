@@ -6,7 +6,7 @@
     android:layout_marginTop="10dp">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/ivListItemFullListPoster"
+        android:id="@+id/ivListItemFullListWatchlistPoster"
         android:layout_width="100dp"
         android:layout_height="170dp"
         android:background="@drawable/home_item_recycler_background"
@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvListItemFullListRating"
+        android:id="@+id/tvListItemFullListWatchlistRating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -23,11 +23,11 @@
         android:padding="4dp"
         android:text="@string/sample_rating"
         android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="@id/ivListItemFullListPoster"
-        app:layout_constraintTop_toTopOf="@id/ivListItemFullListPoster" />
+        app:layout_constraintStart_toStartOf="@id/ivListItemFullListWatchlistPoster"
+        app:layout_constraintTop_toTopOf="@id/ivListItemFullListWatchlistPoster" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvListItemFullListTitle"
+        android:id="@+id/tvListItemFullListWatchlistTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -36,12 +36,12 @@
         android:text="@string/sample_title_movie_home"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/tvListItemFullListYear"
-        app:layout_constraintStart_toEndOf="@id/ivListItemFullListPoster"
+        app:layout_constraintBottom_toTopOf="@id/tvListItemFullListWatchlistYear"
+        app:layout_constraintStart_toEndOf="@id/ivListItemFullListWatchlistPoster"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvListItemFullListYear"
+        android:id="@+id/tvListItemFullListWatchlistYear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -50,11 +50,11 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/ivListItemFullListPoster"
-        app:layout_constraintTop_toBottomOf="@id/tvListItemFullListTitle" />
+        app:layout_constraintStart_toEndOf="@id/ivListItemFullListWatchlistPoster"
+        app:layout_constraintTop_toBottomOf="@id/tvListItemFullListWatchlistTitle" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvListItemFullListLength"
+        android:id="@+id/tvListItemFullListWatchlistLength"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -63,11 +63,11 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tvListItemFullListYear"
-        app:layout_constraintTop_toBottomOf="@id/tvListItemFullListTitle" />
+        app:layout_constraintStart_toEndOf="@id/tvListItemFullListWatchlistYear"
+        app:layout_constraintTop_toBottomOf="@id/tvListItemFullListWatchlistTitle" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/ivListItemFullListRemove"
+        android:id="@+id/ivListItemFullListWatchlistRemove"
         android:layout_width="34dp"
         android:layout_height="34dp"
         android:layout_marginTop="5dp"

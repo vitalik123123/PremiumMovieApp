@@ -14,6 +14,7 @@ import com.example.premiummovieapp.R
 import com.example.premiummovieapp.databinding.FragmentListBinding
 import com.example.premiummovieapp.presentation.lazyViewModel
 import com.example.premiummovieapp.presentation.list.fulllist.ui.ListFullListFragment
+import com.example.premiummovieapp.presentation.list.list.presentation.ListRatinglistAdapter
 import com.example.premiummovieapp.presentation.list.list.presentation.ListViewModel
 import com.example.premiummovieapp.presentation.list.list.presentation.ListWatchlistAdapter
 import com.example.premiummovieapp.presentation.main.BottomNavigationViewDirections
@@ -30,6 +31,8 @@ class ListFragment : Fragment(R.layout.fragment_list) {
     private val binding: FragmentListBinding by viewBinding()
     private val listWatchlistAdapter: ListWatchlistAdapter = ListWatchlistAdapter()
     private lateinit var layoutManagerWatchlist: RecyclerView.LayoutManager
+    private val listRatinglistAdapter: ListRatinglistAdapter = ListRatinglistAdapter()
+    private lateinit var layoutManagerRatinglist: RecyclerView.LayoutManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -46,20 +49,33 @@ class ListFragment : Fragment(R.layout.fragment_list) {
             )
         }
 
-        listWatchlistAdapter.setOnClickListener(onClick)
+        binding.tvListRatinglistSeeAll.setOnClickListener {
+            findNavController().navigate(
+                ListFragmentDirections.actionListFragmentToListFullListFragment(ListFullListFragment.ListType.Ratinglist)
+            )
+        }
+
+        listWatchlistAdapter.setOnClickListener(onClickWatchlist)
+        listRatinglistAdapter.setOnClickListener(onClickRatinglist)
     }
 
     private fun initUi() {
         binding.rvListWatchlist.adapter = listWatchlistAdapter
         layoutManagerWatchlist = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.rvListWatchlist.layoutManager = layoutManagerWatchlist
+        binding.rvListRatinglist.adapter = listRatinglistAdapter
+        layoutManagerRatinglist =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.rvListRatinglist.layoutManager = layoutManagerRatinglist
         viewModel.state.onEach { state ->
             binding.tvListWatchlistCount.text = state.watchlistCount.toString()
             listWatchlistAdapter.setData(state.watchListList)
+            binding.tvListRatinglistCount.text = state.ratinglistCount.toString()
+            listRatinglistAdapter.setData(state.ratingListList)
         }.launchIn(lifecycleScope)
     }
 
-    private val onClick = object : ListWatchlistAdapter.OnItemClickListener {
+    private val onClickWatchlist = object : ListWatchlistAdapter.OnItemClickListener {
         override fun onClick(modelId: Int) {
             findTopNavController().navigate(
                 BottomNavigationViewDirections.actionBottomNavigationViewToMovieDetailsFragment(
@@ -73,6 +89,16 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         }
     }
 
+    private val onClickRatinglist = object : ListRatinglistAdapter.OnItemClickListener {
+        override fun onClick(modelId: Int) {
+            findTopNavController().navigate(
+                BottomNavigationViewDirections.actionBottomNavigationViewToMovieDetailsFragment(
+                    contentId = modelId
+                )
+            )
+        }
+    }
+
     private fun showRemoveAlertDialog(kinopoiskId: Int, title: String) {
         AlertDialog.Builder(requireContext())
             .setTitle(resources.getText(R.string.alert_dialog_remove_watchlist_title))
@@ -82,7 +108,7 @@ class ListFragment : Fragment(R.layout.fragment_list) {
             )
             .setPositiveButton("YES") { dialog, which ->
                 viewModel.deleteMovieFromWatchlist(kinopoiskId = kinopoiskId)
-                viewModel.getAllLocalWatchlist()
+                viewModel.getAllLocalLists()
             }
             .setNegativeButton("NO") { dialog, which ->
 
@@ -92,7 +118,7 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
     override fun onResume() {
         super.onResume()
-        viewModel.getAllLocalWatchlist()
+        viewModel.getAllLocalLists()
     }
 
 }

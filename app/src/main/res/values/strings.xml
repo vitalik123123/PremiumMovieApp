@@ -33,7 +33,11 @@
     <string name="release_item_coming_soon">Jan 01, 2000</string>
     <string name="genres_item_coming_soon">Action</string>
     <string name="watchlist">Watchlist</string>
+    <string name="ratinglist">Ratings</string>
     <string name="watchlist_count">200</string>
+    <string name="ratinglist_count">200</string>
     <string name="alert_dialog_remove_watchlist_title">Подтвердите удаление</string>
     <string name="alert_dialog_remove_watchlist_message">Вы собираетесь удалить из Watchlist</string>
+    <string name="alert_dialog_ratingbar_ratinglist_title">Какую оценку вы хотите поставить</string>
+    <string name="alert_dialog_update_rating_ratinglist_title">Какие изменения вы хотите внести</string>
 </resources>

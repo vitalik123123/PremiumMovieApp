@@ -15,6 +15,7 @@ import com.example.premiummovieapp.R
 import com.example.premiummovieapp.databinding.FragmentListFullListBinding
 import com.example.premiummovieapp.presentation.lazyViewModel
 import com.example.premiummovieapp.presentation.list.fulllist.presentation.ListFullListViewModel
+import com.example.premiummovieapp.presentation.list.fulllist.presentation.ListFullRatinglistAdapter
 import com.example.premiummovieapp.presentation.list.fulllist.presentation.ListFullWatchlistAdapter
 import com.example.premiummovieapp.presentation.main.BottomNavigationViewDirections
 import com.example.premiummovieapp.presentation.main.findTopNavController
@@ -30,6 +31,8 @@ class ListFullListFragment : Fragment(R.layout.fragment_list_full_list) {
     private val binding: FragmentListFullListBinding by viewBinding()
     private val listFullWatchlistAdapter: ListFullWatchlistAdapter = ListFullWatchlistAdapter()
     private lateinit var layoutManagerFullWatchlist: RecyclerView.LayoutManager
+    private val listFullRatinglistAdapter: ListFullRatinglistAdapter = ListFullRatinglistAdapter()
+    private lateinit var layoutManagerFullRatinglist: RecyclerView.LayoutManager
     private val args: ListFullListFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,31 +48,38 @@ class ListFullListFragment : Fragment(R.layout.fragment_list_full_list) {
             findNavController().popBackStack()
         }
 
-        listFullWatchlistAdapter.setOnClickListener(onCLick)
+        listFullWatchlistAdapter.setOnClickListener(onCLickWatchlist)
+        listFullRatinglistAdapter.setOnClickListener(onClickRatinglist)
     }
 
     private fun initUi() {
-        binding.rvListFullList.adapter = listFullWatchlistAdapter
-        layoutManagerFullWatchlist =
-            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        binding.rvListFullList.layoutManager = layoutManagerFullWatchlist
         viewModel.state.onEach { state ->
 
             when (args.listType) {
                 ListType.Watchlist -> {
+                    binding.rvListFullList.adapter = listFullWatchlistAdapter
+                    layoutManagerFullWatchlist =
+                        LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                    binding.rvListFullList.layoutManager = layoutManagerFullWatchlist
                     binding.tvNameListFullList.text = resources.getText(R.string.watchlist)
                     viewModel.getLocalFullWatchlist()
                     listFullWatchlistAdapter.setData(state.fullWatchlist)
                 }
 
-                ListType.RatingList -> {
-
+                ListType.Ratinglist -> {
+                    binding.rvListFullList.adapter = listFullRatinglistAdapter
+                    layoutManagerFullRatinglist =
+                        LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                    binding.rvListFullList.layoutManager = layoutManagerFullRatinglist
+                    binding.tvNameListFullList.text = resources.getText(R.string.ratinglist)
+                    viewModel.getLocalFullRatinglist()
+                    listFullRatinglistAdapter.setData(state.fullRatinglist)
                 }
             }
         }.launchIn(lifecycleScope)
     }
 
-    private val onCLick = object : ListFullWatchlistAdapter.OnItemClickListener {
+    private val onCLickWatchlist = object : ListFullWatchlistAdapter.OnItemClickListener {
         override fun onClick(modelId: Int) {
             findTopNavController().navigate(
                 BottomNavigationViewDirections.actionBottomNavigationViewToMovieDetailsFragment(
@@ -82,6 +92,16 @@ class ListFullListFragment : Fragment(R.layout.fragment_list_full_list) {
             showRemoveAlertDialog(kinopoiskId = modelId, title = modelTitle)
         }
 
+    }
+
+    private val onClickRatinglist = object : ListFullRatinglistAdapter.OnItemClickListener {
+        override fun onClick(modelId: Int) {
+            findTopNavController().navigate(
+                BottomNavigationViewDirections.actionBottomNavigationViewToMovieDetailsFragment(
+                    contentId = modelId
+                )
+            )
+        }
     }
 
     private fun showRemoveAlertDialog(kinopoiskId: Int, title: String) {
@@ -102,6 +122,6 @@ class ListFullListFragment : Fragment(R.layout.fragment_list_full_list) {
     }
 
     enum class ListType {
-        Watchlist, RatingList
+        Watchlist, Ratinglist
     }
 }

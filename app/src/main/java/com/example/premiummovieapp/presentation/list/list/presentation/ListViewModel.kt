@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.premiummovieapp.data.repositories.MovieRepository
+import com.example.premiummovieapp.data.repositories.local.room.dao.ratinglist.RatingEntity
 import com.example.premiummovieapp.data.repositories.local.room.dao.watchlist.WatchlistEntity
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -19,17 +20,22 @@ class ListViewModel @AssistedInject constructor(
 
     val state = MutableStateFlow(value = MyState())
 
-    init {
-        getAllLocalWatchlist()
-    }
-
-    fun getAllLocalWatchlist() {
+    fun getAllLocalLists() {
         viewModelScope.launch {
             movieRepository.getAllLocalWatchlist().let { watchlist ->
                 state.update { ui ->
                     ui.copy(
                         watchListList = watchlist.takeLast(10).reversed(),
                         watchlistCount = watchlist.count()
+                    )
+                }
+            }
+
+            movieRepository.getAllLocalRatinglist().let { ratinglist ->
+                state.update { ui ->
+                    ui.copy(
+                        ratingListList = ratinglist.takeLast(10).reversed(),
+                        ratinglistCount = ratinglist.count()
                     )
                 }
             }
@@ -49,6 +55,8 @@ class ListViewModel @AssistedInject constructor(
 
     data class MyState(
         val watchListList: List<WatchlistEntity> = emptyList(),
-        val watchlistCount: Int = 0
+        val watchlistCount: Int = 0,
+        val ratingListList: List<RatingEntity> = emptyList(),
+        val ratinglistCount: Int = 0
     )
 }

@@ -6,6 +6,7 @@ import com.example.premiummovieapp.data.model.details.FilmDataDetails
 import com.example.premiummovieapp.data.model.FilmTopResponseData
 import com.example.premiummovieapp.data.model.details.FilmSequelsAndPrequels
 import com.example.premiummovieapp.data.model.details.FilmSimilarsResponseData
+import com.example.premiummovieapp.data.repositories.local.room.dao.ratinglist.RatingEntity
 import com.example.premiummovieapp.data.repositories.local.room.dao.watchlist.WatchlistEntity
 
 interface MovieRepository {
@@ -29,4 +30,16 @@ interface MovieRepository {
     suspend fun deleteMovieFromWatchlist(kinopoiskId: Int)
 
     suspend fun existsMovieToWatchList(kinopoiskId: Int): Boolean
+
+    suspend fun getAllLocalRatinglist(): List<RatingEntity>
+
+    suspend fun saveMyRatingToRatinglist(film: FilmDataDetails, myRating: Int)
+
+    suspend fun getMyRatingFromRatinglistToDetails(kinopoiskId: Int): Int
+
+    suspend fun deleteMyRatingFromRatinglist(kinopoiskId: Int)
+
+    suspend fun updateMyRatingFromRatinglist(kinopoiskId: Int, myRating: Int)
+
+    suspend fun existsMyRatingToRatinglist(kinopoiskId: Int): Boolean
 }

@@ -7,16 +7,18 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.premiummovieapp.data.repositories.local.room.dao.ratinglist.RatingEntity
 import com.example.premiummovieapp.data.repositories.local.room.dao.watchlist.WatchlistEntity
 import com.example.premiummovieapp.databinding.ListFullistWatchlistItemRecyclerBinding
+import com.example.premiummovieapp.databinding.ListFulllistRatingItemRecyclerBinding
 
-class ListFullWatchlistAdapter : RecyclerView.Adapter<ListFullWatchlistAdapter.ViewHolder>() {
+class ListFullRatinglistAdapter : RecyclerView.Adapter<ListFullRatinglistAdapter.ViewHolder>() {
 
-    private var fullWatchlistList: List<WatchlistEntity> = emptyList()
+    private var fullRatinglistList: List<RatingEntity> = emptyList()
     private var listener: OnItemClickListener? = null
 
-    fun setData(_fullWatchlistList: List<WatchlistEntity>) {
-        fullWatchlistList = _fullWatchlistList
+    fun setData(_fullRatinglistList: List<RatingEntity>) {
+        fullRatinglistList = _fullRatinglistList
         notifyDataSetChanged()
     }
 
@@ -25,7 +27,7 @@ class ListFullWatchlistAdapter : RecyclerView.Adapter<ListFullWatchlistAdapter.V
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ListFullistWatchlistItemRecyclerBinding.inflate(
+        val binding = ListFulllistRatingItemRecyclerBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -33,39 +35,35 @@ class ListFullWatchlistAdapter : RecyclerView.Adapter<ListFullWatchlistAdapter.V
         return ViewHolder(binding)
     }
 
-    override fun getItemCount(): Int = fullWatchlistList.count()
+    override fun getItemCount(): Int = fullRatinglistList.count()
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(model = fullWatchlistList[position])
+        holder.bind(model = fullRatinglistList[position])
     }
 
-    inner class ViewHolder(private val binding: ListFullistWatchlistItemRecyclerBinding) :
+    inner class ViewHolder(private val binding: ListFulllistRatingItemRecyclerBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(model: WatchlistEntity) {
-            binding.tvListItemFullListWatchlistRating.text = model.rating.toString()
-            binding.tvListItemFullListWatchlistTitle.text = model.title
-            binding.tvListItemFullListWatchlistYear.text = model.year.toString()
-            binding.tvListItemFullListWatchlistLength.text = model.length.toString().plus("мин")
+        fun bind(model: RatingEntity) {
+            binding.tvListItemFullListRatinglistRating.text = model.rating.toString()
+            binding.tvListItemFullListRatinglistTitle.text = model.title
+            binding.tvListItemFullListRatinglistYear.text = model.year.toString()
+            binding.tvListItemFullListRatinglistLength.text = model.length.toString().plus("мин")
+            binding.tvListItemFullListRatinglistMyRating.text = model.myRating.toString()
 
             Glide.with(itemView.context)
                 .load(model.poster)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .transform(CenterCrop(), RoundedCorners(16))
-                .into(binding.ivListItemFullListWatchlistPoster)
+                .into(binding.ivListItemFullListRatinglistPoster)
 
             itemView.setOnClickListener {
                 listener?.onClick(modelId = model.kinopoiskId)
-            }
-
-            binding.ivListItemFullListWatchlistRemove.setOnClickListener {
-                listener?.onClickRemove(modelId = model.kinopoiskId, modelTitle = model.title)
             }
         }
     }
 
     interface OnItemClickListener {
         fun onClick(modelId: Int)
-        fun onClickRemove(modelId: Int, modelTitle: String)
     }
 }

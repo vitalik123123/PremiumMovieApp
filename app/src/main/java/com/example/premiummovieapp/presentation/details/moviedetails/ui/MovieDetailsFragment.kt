@@ -1,8 +1,12 @@
 package com.example.premiummovieapp.presentation.details.moviedetails.ui
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.widget.RatingBar
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
@@ -12,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.example.premiummovieapp.R
+import com.example.premiummovieapp.data.model.details.FilmDataDetails
 import com.example.premiummovieapp.databinding.FragmentMovieDetailsBinding
 import com.example.premiummovieapp.presentation.details.moviedetails.presentation.MovieDetailsCastAdapter
 import com.example.premiummovieapp.presentation.details.moviedetails.presentation.MovieDetailsMoreLikeThisAdapter
@@ -40,6 +45,7 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
     private val movieDetailsMoreLikeThisAdapter: MovieDetailsMoreLikeThisAdapter =
         MovieDetailsMoreLikeThisAdapter()
     private lateinit var movieDetailsMoreLikeThisLayoutManager: LinearLayoutManager
+    private lateinit var prefs: SharedPreferences
 
     @Inject
     lateinit var connectivityStatus: ConnectivityStatus
@@ -47,6 +53,7 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getAppComponent().injectMovieDetailsFragment(this)
+        prefs = this.requireActivity().getPreferences(Context.MODE_PRIVATE)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,7 +108,8 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
                     ""
                 }
                 tvMovieDetailsYear.text = state.film.year.toString()
-                tvMovieDetailsRuntime.text = state.film.length.toString().plus("мин")
+                tvMovieDetailsRuntime.text =
+                    state.film.length.let { length -> length?.toString()?.plus("мин") ?: "0мин" }
                 tvMovieDetailsGenres.text =
                     resources.getString(R.string.sample_genres).plus(" ").plus(state.genresString)
                 tvMovieDetailsDescription.text = state.film.description
@@ -127,6 +135,14 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
                     } else {
                         viewModel.saveMovieToWatchlist(state.film)
                         viewModel.exists(args.contentId)
+                    }
+                }
+
+                tvMovieDetailsUserRating.setOnClickListener {
+                    if (state.existsMovieToRatinglist) {
+                        showUpdateRatingDialog()
+                    } else {
+                        showRatingBarDialog(state.film)
                     }
                 }
 
@@ -158,8 +174,79 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
                         )
                     }))
                 }
+
+                if (state.existsMovieToRatinglist) {
+                    viewModel.getMyRating(args.contentId)
+                    tvMovieDetailsUserRating.text = state.myRating.toString()
+                    tvMovieDetailsUserRating.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_star,
+                        0,
+                        0,
+                        0
+                    )
+                } else {
+                    tvMovieDetailsUserRating.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_star_border,
+                        0,
+                        0,
+                        0
+                    )
+                }
             }
         }.launchIn(lifecycleScope)
+    }
+
+    private fun showRatingBarDialog(film: FilmDataDetails) {
+        val layout = layoutInflater.inflate(R.layout.ratingdialog, null)
+        val bar = layout.findViewById(R.id.ratingbar) as RatingBar
+        bar.setOnRatingBarChangeListener { ratingBar, fl, b ->
+            prefs.edit().putFloat(RATING_PREFS, fl).apply()
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setView(layout)
+            .setTitle(R.string.alert_dialog_ratingbar_ratinglist_title)
+            .setNegativeButton("Отмена") { dialog, which ->
+                dialog.cancel()
+            }
+            .setPositiveButton("Готово") { dialog, which ->
+                viewModel.saveMyRatingToRatingList(
+                    film = film,
+                    myRating = prefs.getFloat(RATING_PREFS, 0F).toInt()
+                )
+                viewModel.exists(args.contentId)
+                viewModel.getMyRating(args.contentId)
+            }
+            .show()
+    }
+
+    private fun showUpdateRatingDialog() {
+        val layout = layoutInflater.inflate(R.layout.ratingdialog, null)
+        val bar = layout.findViewById(R.id.ratingbar) as RatingBar
+        bar.setOnRatingBarChangeListener { ratingBar, fl, b ->
+            prefs.edit().putFloat(RATING_PREFS, fl).apply()
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setView(layout)
+            .setTitle(R.string.alert_dialog_update_rating_ratinglist_title)
+            .setPositiveButton("Изменить") { dialog, which ->
+                viewModel.updateMyRatingToRatinglist(
+                    kinopoiskId = args.contentId,
+                    myRating = prefs.getFloat(RATING_PREFS, 0F).toInt()
+                )
+                viewModel.exists(args.contentId)
+                viewModel.getMyRating(args.contentId)
+            }
+            .setNegativeButton("Удалить") { dialog, which ->
+                viewModel.deleteMyRatingFromRatinglist(args.contentId)
+                viewModel.exists(args.contentId)
+                binding.tvMovieDetailsUserRating.text = ""
+            }
+            .setNeutralButton("Отмена") { dialog, which ->
+                dialog.cancel()
+            }
+            .show()
     }
 
     private val onClickSequelsAndPrequels =
@@ -182,5 +269,9 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
             )
         )
 
+    }
+
+    companion object {
+        const val RATING_PREFS = "rating"
     }
 }

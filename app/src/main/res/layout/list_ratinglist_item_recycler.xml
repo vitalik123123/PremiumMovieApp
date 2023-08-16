@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="5dp">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imListItemRatinglistPoster"
+        android:layout_width="160dp"
+        android:layout_height="260dp"
+        android:background="@drawable/home_item_recycler_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvListItemRatinglistRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/home_item_recycler_background"
+        android:backgroundTint="@color/red_main"
+        android:padding="7dp"
+        android:text="@string/sample_rating"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@id/imListItemRatinglistPoster"
+        app:layout_constraintTop_toTopOf="@id/imListItemRatinglistPoster" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvListItemRatinglistTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="120dp"
+        android:maxLines="2"
+        android:padding="5dp"
+        android:text="@string/sample_title_movie_home"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvListItemRatinglistMyRating"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imListItemRatinglistPoster" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvListItemRatinglistMyRating"
+        android:layout_width="48dp"
+        android:layout_height="26dp"
+        android:layout_marginEnd="5dp"
+        android:drawableStart="@drawable/ic_star_border"
+        android:drawableTint="@color/red_main"
+        android:text="@string/sample_rating"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imListItemRatinglistPoster" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
