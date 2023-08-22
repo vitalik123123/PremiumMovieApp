@@ -40,4 +40,13 @@
     <string name="alert_dialog_remove_watchlist_message">Вы собираетесь удалить из Watchlist</string>
     <string name="alert_dialog_ratingbar_ratinglist_title">Какую оценку вы хотите поставить</string>
     <string name="alert_dialog_update_rating_ratinglist_title">Какие изменения вы хотите внести</string>
+    <string name="email_sing_in">Email</string>
+    <string name="password_sing_in">Password</string>
+    <string name="login_sing_in">Login</string>
+    <string name="go_to_registration_sign_in">У Вас ещё нет аккаунта?</string>
+    <string name="go_to_login_sign_up">Вернуться ко входу</string>
+    <string name="name_sign_up">Name</string>
+    <string name="registration_sing_up">Register</string>
+    <string name="confirm_password_sign_up">Confirm Password</string>
+    <string name="log_out_profile">Log Out</string>
 </resources>

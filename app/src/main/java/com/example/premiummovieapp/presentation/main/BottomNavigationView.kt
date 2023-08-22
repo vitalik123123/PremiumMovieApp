@@ -30,13 +30,3 @@ class BottomNavigationView : Fragment(R.layout.fragment_bottom_navigation_view) 
         }
     }
 }
-
-fun Fragment.findTopNavController(): NavController {
-    val topLevelHost =
-        requireActivity().supportFragmentManager.findFragmentById(R.id.navFragment) as NavHostFragment?
-    return topLevelHost?.navController ?: findNavController()
-}
-
-fun Fragment.getAppComponent(): AppComponent {
-    return (activity?.application as MovieApp).appComponent
-}
