@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
-
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val viewModel: HomeViewModel by lazyViewModel { stateHandel ->
@@ -38,6 +37,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var layoutManagerPopularMovies: RecyclerView.LayoutManager
     private lateinit var layoutManagerBestMovies: RecyclerView.LayoutManager
     private lateinit var layoutManagerAwaitMovies: RecyclerView.LayoutManager
+
     @Inject
     lateinit var connectivityStatus: ConnectivityStatus
 

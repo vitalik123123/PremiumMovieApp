@@ -10,6 +10,9 @@ import com.example.premiummovieapp.data.repositories.local.MovieLocalDataSource
 import com.example.premiummovieapp.data.repositories.local.room.dao.ratinglist.RatingEntity
 import com.example.premiummovieapp.data.repositories.local.room.dao.watchlist.WatchlistEntity
 import com.example.premiummovieapp.data.repositories.remote.MovieRemoteDataSource
+import com.example.premiummovieapp.data.model.firebase.FirebaseRatingForRatingReference
+import com.example.premiummovieapp.data.model.firebase.FirebaseRatingForUsersReference
+import com.example.premiummovieapp.data.model.firebase.FirebaseUser
 
 class MovieRepositoryImpl(
     private val movieRemoteDataSource: MovieRemoteDataSource,
@@ -89,4 +92,46 @@ class MovieRepositoryImpl(
 
     override suspend fun existsMyRatingToRatinglist(kinopoiskId: Int): Boolean =
         movieLocalDataSource.existsMyRatingToRatinglist(kinopoiskId = kinopoiskId)
+
+    override suspend fun saveUserDataToRealtimeDatabaseFirebase(
+        currentUserUid: String,
+        user: FirebaseUser
+    ) {
+        movieRemoteDataSource.saveUserDataToRealtimeDatabaseFirebase(
+            currentUserUid = currentUserUid,
+            user = user
+        )
+    }
+
+    override suspend fun saveUserRatingToRealtimeDatabaseFirebase(
+        currentUserUid: String,
+        kinopoiskId: Int,
+        ratingForRatingReference: FirebaseRatingForRatingReference,
+        ratingForUsersReference: FirebaseRatingForUsersReference
+    ) = movieRemoteDataSource.saveUserRatingToRealtimeDatabaseFirebase(
+        currentUserUid = currentUserUid,
+        kinopoiskId = kinopoiskId,
+        ratingForRatingReference = ratingForRatingReference,
+        ratingForUsersReference = ratingForUsersReference
+    )
+
+    override suspend fun getUserRatingFromRealtimeDatabaseFirebase(
+        currentUserUid: String,
+        kinopoiskId: Int
+    ): FirebaseRatingForRatingReference? =
+        movieRemoteDataSource.getUserRatingFromRealtimeDatabaseFirebase(
+            currentUserUid = currentUserUid,
+            kinopoiskId = kinopoiskId
+        )
+
+    override suspend fun getListUserRatingFromRealtimeDatabaseFirebase(currentUserUid: String): ArrayList<FirebaseRatingForUsersReference> =
+        movieRemoteDataSource.getListUserRatingFromRealtimeDatabaseFirebase(currentUserUid = currentUserUid)
+
+    override suspend fun deleteUserRatingToRealtimeDatabaseFirebase(
+        currentUserUid: String,
+        kinopoiskId: Int
+    ) = movieRemoteDataSource.deleteUserRatingToRealtimeDatabaseFirebase(
+        currentUserUid = currentUserUid,
+        kinopoiskId = kinopoiskId
+    )
 }

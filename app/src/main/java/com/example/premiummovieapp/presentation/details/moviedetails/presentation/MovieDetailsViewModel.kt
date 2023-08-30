@@ -9,6 +9,8 @@ import com.example.premiummovieapp.data.model.details.FilmSequelsAndPrequels
 import com.example.premiummovieapp.data.model.details.FilmSimilars
 import com.example.premiummovieapp.data.model.details.ProfessionKey
 import com.example.premiummovieapp.data.repositories.MovieRepository
+import com.example.premiummovieapp.data.model.firebase.FirebaseRatingForRatingReference
+import com.example.premiummovieapp.data.model.firebase.FirebaseRatingForUsersReference
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -69,7 +71,7 @@ class MovieDetailsViewModel @AssistedInject constructor(
         }
     }
 
-    fun deleteMyRatingFromRatinglist(kinopoiskId: Int){
+    fun deleteMyRatingFromRatinglist(kinopoiskId: Int) {
         viewModelScope.launch {
             movieRepository.deleteMyRatingFromRatinglist(kinopoiskId = kinopoiskId)
         }
@@ -77,7 +79,10 @@ class MovieDetailsViewModel @AssistedInject constructor(
 
     fun updateMyRatingToRatinglist(kinopoiskId: Int, myRating: Int) {
         viewModelScope.launch {
-            movieRepository.updateMyRatingFromRatinglist(kinopoiskId = kinopoiskId, myRating = myRating)
+            movieRepository.updateMyRatingFromRatinglist(
+                kinopoiskId = kinopoiskId,
+                myRating = myRating
+            )
         }
     }
 
@@ -90,6 +95,45 @@ class MovieDetailsViewModel @AssistedInject constructor(
             }
         }
     }
+
+    fun saveUserRatingToRealtimeDatabaseFirebase(
+        currentUserUid: String,
+        kinopoiskId: Int,
+        ratingForRatingReference: FirebaseRatingForRatingReference,
+        ratingForUsersReference: FirebaseRatingForUsersReference
+    ) {
+        viewModelScope.launch {
+            movieRepository.saveUserRatingToRealtimeDatabaseFirebase(
+                currentUserUid = currentUserUid,
+                kinopoiskId = kinopoiskId,
+                ratingForRatingReference = ratingForRatingReference,
+                ratingForUsersReference = ratingForUsersReference
+            )
+        }
+    }
+
+    fun getUserRattingFromRealtimeDatabaseFirebase(currentUserUid: String, kinopoiskId: Int) {
+        viewModelScope.launch {
+            state.update { ui ->
+                movieRepository.getUserRatingFromRealtimeDatabaseFirebase(
+                    currentUserUid = currentUserUid,
+                    kinopoiskId = kinopoiskId
+                ).let {
+                    ui.copy(userRatingFirebase = it?.userRating?.toString())
+                }
+            }
+        }
+    }
+
+    fun deleteUserRatingToRealtimeDatabaseFirebase(currentUserUid: String, kinopoiskId: Int) {
+        viewModelScope.launch {
+            movieRepository.deleteUserRatingToRealtimeDatabaseFirebase(
+                currentUserUid = currentUserUid,
+                kinopoiskId = kinopoiskId
+            )
+        }
+    }
+
 
     @AssistedFactory
     interface Factory {
@@ -104,6 +148,7 @@ class MovieDetailsViewModel @AssistedInject constructor(
         val filmSimilars: List<FilmSimilars>? = null,
         val existsMovieToWatchlist: Boolean = false,
         val existsMovieToRatinglist: Boolean = false,
-        val myRating: Int = 0
+        val myRating: Int = 0,
+        val userRatingFirebase: String? = null
     )
 }

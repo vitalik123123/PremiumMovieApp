@@ -8,6 +8,9 @@ import com.example.premiummovieapp.data.model.details.FilmSequelsAndPrequels
 import com.example.premiummovieapp.data.model.details.FilmSimilarsResponseData
 import com.example.premiummovieapp.data.repositories.local.room.dao.ratinglist.RatingEntity
 import com.example.premiummovieapp.data.repositories.local.room.dao.watchlist.WatchlistEntity
+import com.example.premiummovieapp.data.model.firebase.FirebaseRatingForRatingReference
+import com.example.premiummovieapp.data.model.firebase.FirebaseRatingForUsersReference
+import com.example.premiummovieapp.data.model.firebase.FirebaseUser
 
 interface MovieRepository {
 
@@ -42,4 +45,25 @@ interface MovieRepository {
     suspend fun updateMyRatingFromRatinglist(kinopoiskId: Int, myRating: Int)
 
     suspend fun existsMyRatingToRatinglist(kinopoiskId: Int): Boolean
+
+    suspend fun saveUserDataToRealtimeDatabaseFirebase(currentUserUid: String, user: FirebaseUser)
+
+    suspend fun saveUserRatingToRealtimeDatabaseFirebase(
+        currentUserUid: String,
+        kinopoiskId: Int,
+        ratingForRatingReference: FirebaseRatingForRatingReference,
+        ratingForUsersReference: FirebaseRatingForUsersReference
+    )
+
+    suspend fun getUserRatingFromRealtimeDatabaseFirebase(
+        currentUserUid: String,
+        kinopoiskId: Int
+    ): FirebaseRatingForRatingReference?
+
+    suspend fun getListUserRatingFromRealtimeDatabaseFirebase(currentUserUid: String): ArrayList<FirebaseRatingForUsersReference>
+
+    suspend fun deleteUserRatingToRealtimeDatabaseFirebase(
+        currentUserUid: String,
+        kinopoiskId: Int
+    )
 }

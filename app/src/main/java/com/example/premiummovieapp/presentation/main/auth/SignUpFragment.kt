@@ -1,25 +1,38 @@
 package com.example.premiummovieapp.presentation.main.auth
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.premiummovieapp.R
+import com.example.premiummovieapp.data.model.firebase.FirebaseUser
 import com.example.premiummovieapp.databinding.FragmentSignUpBinding
+import com.example.premiummovieapp.presentation.lazyViewModel
 import com.example.premiummovieapp.presentation.main.SplashFragment
+import com.example.premiummovieapp.presentation.main.getAppComponent
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
+import java.sql.Timestamp
 
 class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
 
+    private val viewModel: SignUpViewModel by lazyViewModel { stateHandel ->
+        getAppComponent().injectSignUpViewModel().create(stateHandel)
+    }
     private val binding: FragmentSignUpBinding by viewBinding()
     private lateinit var auth: FirebaseAuth
-    private lateinit var reference: DatabaseReference
+    private lateinit var prefs: SharedPreferences
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        prefs = this.requireActivity().getPreferences(Context.MODE_PRIVATE)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -29,13 +42,13 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
         ).isAppearanceLightStatusBars = true
 
         auth = FirebaseAuth.getInstance()
-        reference = Firebase.database(SplashFragment.REALTIME_DATABASE_NAME)
-            .getReference(SplashFragment.FIREBASE_CHILD_USERS)
 
         binding.btnRegisterSignUp.setOnClickListener {
             binding.btnRegisterSignUpProgressBar.visibility = View.VISIBLE
             binding.btnRegisterSignUp.isClickable = false
-            signUp()
+            lifecycleScope.launch {
+                signUp()
+            }
         }
 
         binding.tvGoToLogin.setOnClickListener {
@@ -61,19 +74,30 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
 
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
             if (it.isSuccessful) {
-                reference.child(auth.currentUser!!.uid)
-                    .child(SplashFragment.FIREBASE_CHILD_USER_DATA).setValue(
-                        FirebaseUser(
-                            uid = auth.currentUser!!.uid,
-                            username = username,
-                            email = email
-                        )
+                prefs.edit().putString(SplashFragment.PREFS_CURRENT_USER, auth.currentUser!!.uid)
+                    .apply()
+                viewModel.createUserDataToRealtimeDatabaseFirebase(
+                    currentUserUid = prefs.getString(
+                        SplashFragment.PREFS_CURRENT_USER,
+                        ""
+                    )!!,
+                    user = FirebaseUser(
+                        uid = prefs.getString(
+                            SplashFragment.PREFS_CURRENT_USER,
+                            ""
+                        ),
+                        username = username,
+                        email = email,
+                        timestamp = Timestamp(System.currentTimeMillis()).time
                     )
+                )
                 findNavController().navigate(
                     SignUpFragmentDirections.actionSingUpFragmentToBottomNavigationView()
                 )
             } else {
                 Toast.makeText(context, "Fail", Toast.LENGTH_LONG).show()
+                binding.btnRegisterSignUp.isClickable = true
+                binding.btnRegisterSignUpProgressBar.visibility = View.GONE
             }
         }
     }
@@ -91,8 +115,3 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     }
 }
 
-data class FirebaseUser(
-    val uid: String? = "",
-    val username: String? = "",
-    val email: String? = ""
-)

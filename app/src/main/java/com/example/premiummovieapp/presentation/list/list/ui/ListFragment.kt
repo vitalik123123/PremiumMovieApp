@@ -1,5 +1,7 @@
 package com.example.premiummovieapp.presentation.list.list.ui
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -18,6 +20,7 @@ import com.example.premiummovieapp.presentation.list.list.presentation.ListRatin
 import com.example.premiummovieapp.presentation.list.list.presentation.ListViewModel
 import com.example.premiummovieapp.presentation.list.list.presentation.ListWatchlistAdapter
 import com.example.premiummovieapp.presentation.main.BottomNavigationViewDirections
+import com.example.premiummovieapp.presentation.main.SplashFragment
 import com.example.premiummovieapp.presentation.main.findTopNavController
 import com.example.premiummovieapp.presentation.main.getAppComponent
 import kotlinx.coroutines.flow.launchIn
@@ -33,6 +36,12 @@ class ListFragment : Fragment(R.layout.fragment_list) {
     private lateinit var layoutManagerWatchlist: RecyclerView.LayoutManager
     private val listRatinglistAdapter: ListRatinglistAdapter = ListRatinglistAdapter()
     private lateinit var layoutManagerRatinglist: RecyclerView.LayoutManager
+    private lateinit var prefs: SharedPreferences
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        prefs = this.requireActivity().getPreferences(Context.MODE_PRIVATE)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -60,6 +69,12 @@ class ListFragment : Fragment(R.layout.fragment_list) {
     }
 
     private fun initUi() {
+        viewModel.getListUserRatingFromRealtimeDatabaseFirebase(
+            prefs.getString(
+                SplashFragment.PREFS_CURRENT_USER,
+                ""
+            )!!
+        )
         binding.rvListWatchlist.adapter = listWatchlistAdapter
         layoutManagerWatchlist = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.rvListWatchlist.layoutManager = layoutManagerWatchlist
@@ -71,7 +86,7 @@ class ListFragment : Fragment(R.layout.fragment_list) {
             binding.tvListWatchlistCount.text = state.watchlistCount.toString()
             listWatchlistAdapter.setData(state.watchListList)
             binding.tvListRatinglistCount.text = state.ratinglistCount.toString()
-            listRatinglistAdapter.setData(state.ratingListList)
+            listRatinglistAdapter.setData(state.firebaseList)
         }.launchIn(lifecycleScope)
     }
 

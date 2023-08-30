@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.premiummovieapp.data.repositories.MovieRepository
 import com.example.premiummovieapp.data.repositories.local.room.dao.ratinglist.RatingEntity
 import com.example.premiummovieapp.data.repositories.local.room.dao.watchlist.WatchlistEntity
+import com.example.premiummovieapp.data.model.firebase.FirebaseRatingForUsersReference
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -30,21 +31,27 @@ class ListViewModel @AssistedInject constructor(
                     )
                 }
             }
-
-            movieRepository.getAllLocalRatinglist().let { ratinglist ->
-                state.update { ui ->
-                    ui.copy(
-                        ratingListList = ratinglist.takeLast(10).reversed(),
-                        ratinglistCount = ratinglist.count()
-                    )
-                }
-            }
         }
     }
 
     fun deleteMovieFromWatchlist(kinopoiskId: Int) {
         viewModelScope.launch {
             movieRepository.deleteMovieFromWatchlist(kinopoiskId = kinopoiskId)
+        }
+    }
+
+    fun getListUserRatingFromRealtimeDatabaseFirebase(currentUserUid: String) {
+        viewModelScope.launch {
+            state.update { ui ->
+                movieRepository.getListUserRatingFromRealtimeDatabaseFirebase(currentUserUid)
+                    .let { list ->
+                        ui.copy(
+                            firebaseList = list.toList().sortedBy { it.timestamp }.takeLast(10)
+                                .reversed(),
+                            ratinglistCount = list.count()
+                        )
+                    }
+            }
         }
     }
 
@@ -57,6 +64,7 @@ class ListViewModel @AssistedInject constructor(
         val watchListList: List<WatchlistEntity> = emptyList(),
         val watchlistCount: Int = 0,
         val ratingListList: List<RatingEntity> = emptyList(),
-        val ratinglistCount: Int = 0
+        val ratinglistCount: Int = 0,
+        val firebaseList: List<FirebaseRatingForUsersReference> = emptyList()
     )
 }

@@ -32,8 +32,11 @@ class SplashFragment : Fragment(R.layout.fragment_splash) {
     }
 
     companion object {
-        const val FIREBASE_CHILD_USERS = "users"
+        const val PREFS_CURRENT_USER = "prefs_current_user"
+        const val FIREBASE_REFERENCE_USERS = "users"
+        const val FIREBASE_REFERENCE_RATINGS = "ratings"
         const val FIREBASE_CHILD_USER_DATA = "user_data"
+        const val FIREBASE_CHILD_USER_RATING = "user_rating"
         const val REALTIME_DATABASE_NAME =
             "https://premiummovieapp-6f03e-default-rtdb.europe-west1.firebasedatabase.app/"
     }

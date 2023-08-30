@@ -7,15 +7,15 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.premiummovieapp.data.repositories.local.room.dao.ratinglist.RatingEntity
 import com.example.premiummovieapp.databinding.ListRatinglistItemRecyclerBinding
+import com.example.premiummovieapp.data.model.firebase.FirebaseRatingForUsersReference
 
 class ListRatinglistAdapter : RecyclerView.Adapter<ListRatinglistAdapter.ViewHolder>() {
 
-    private var ratinglistList: List<RatingEntity> = emptyList()
+    private var ratinglistList: List<FirebaseRatingForUsersReference> = emptyList()
     private var listener: OnItemClickListener? = null
 
-    fun setData(_ratinglistList: List<RatingEntity>) {
+    fun setData(_ratinglistList: List<FirebaseRatingForUsersReference>) {
         ratinglistList = _ratinglistList
         notifyDataSetChanged()
     }
@@ -42,10 +42,10 @@ class ListRatinglistAdapter : RecyclerView.Adapter<ListRatinglistAdapter.ViewHol
     inner class ViewHolder(private val binding: ListRatinglistItemRecyclerBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(model: RatingEntity) {
-            binding.tvListItemRatinglistRating.text = model.rating.toString()
+        fun bind(model: FirebaseRatingForUsersReference) {
+            binding.tvListItemRatinglistRating.text = model.kinopoiskRating.toString()
             binding.tvListItemRatinglistTitle.text = model.title
-            binding.tvListItemRatinglistMyRating.text = model.myRating.toString()
+            binding.tvListItemRatinglistMyRating.text = model.userRating.toString()
 
             Glide.with(itemView.context)
                 .load(model.poster)
@@ -54,7 +54,7 @@ class ListRatinglistAdapter : RecyclerView.Adapter<ListRatinglistAdapter.ViewHol
                 .into(binding.imListItemRatinglistPoster)
 
             binding.imListItemRatinglistPoster.setOnClickListener {
-                listener?.onClick(model.kinopoiskId)
+                listener?.onClick(model.kinopoiskId!!)
             }
         }
     }
